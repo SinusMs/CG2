@@ -19,18 +19,24 @@ const int CHARS_PER_LINE = 512;
 
 //source of trim functions: http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 // trim from start
-static inline std::string &ltrim(std::string &s) {
-	s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not_fn(std::function<int(int)>(std::isspace))));
+static inline std::string& ltrim (std::string &s)
+{
+	s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+		return !std::isspace(ch);
+	}));
 	return s;
 }
 
 // trim from end
-static inline std::string &rtrim(std::string &s) {
-	s.erase(std::find_if(s.rbegin(), s.rend(), std::not_fn(std::function<int(int)>(std::isspace))).base(), s.end());
+static inline std::string& rtrim (std::string &s)
+{
+	s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+		return !std::isspace(ch);
+	}).base(), s.end());
 	return s;
 }
 
 // trim from both ends
-static inline std::string &trim(std::string &s) {
+static inline std::string& trim (std::string &s) {
 	return ltrim(rtrim(s));
 }
