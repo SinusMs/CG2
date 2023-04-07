@@ -1,4 +1,4 @@
-% allow for numerical gradients - set 'numeric' to true (you can do tbat in the GUI too)
+% allow for numerical gradients - set 'numeric' to true (you can do that in the GUI too)
 % to compare against your analytic gradients
 numeric_gradient[epsilon=0.0625;numeric=false](
   sphere
