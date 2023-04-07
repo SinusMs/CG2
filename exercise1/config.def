@@ -1,6 +1,6 @@
 
 // The UI theme: light, mid, dark, darkest, legacy
-type(fltk_viewer_window):theme=legacy
+type(fltk_viewer_window):theme=dark
 
 // Demo settings
 type(cgv_demo):text="Hallo Welt"

@@ -64,7 +64,7 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 
 void Bone::add_dof(AtomicTransform* dof)
 {
-	dof->set_index_in_amc(dofs.size());	
+	dof->set_index_in_amc((int)dofs.size());	
 	if (dynamic_cast<AtomicTranslationTransform*>(dof))
 	{
 		dofs.push_front(std::shared_ptr<AtomicTransform>(dof));
@@ -90,7 +90,7 @@ void Bone::add_child(Bone* child)
 	children.push_back(child);
 }
 Bone* Bone::child_at(int i) const { return children[i]; }
-int Bone::childCount() const { return children.size(); }
+int Bone::childCount() const { return (int)children.size(); }
 
 void Bone::set_parent(Bone* parent)
 {
@@ -98,7 +98,7 @@ void Bone::set_parent(Bone* parent)
 }
 Bone* Bone::get_parent() const { return parent; }
 
-int Bone::dof_count() const { return dofs.size(); }
+int Bone::dof_count() const { return (int)dofs.size(); }
 std::shared_ptr<AtomicTransform> Bone::get_dof(int dofIndex) const { return dofs[dofIndex]; }
 
 const Mat4& Bone::get_binding_pose_matrix() const

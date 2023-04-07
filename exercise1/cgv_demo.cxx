@@ -108,7 +108,7 @@ public:
 	cgv_demo()
 		: text("Hello World"), text_size(24), text_face_attrib(REGULAR), text_pos(8, 32),
 		  fb_resolution(512, 256), fb_invalid(true),
-		  font_face(cgv::media::font::find_font("times")->get_font_face(
+		  font_face(cgv::media::font::find_font_or_default("times")->get_font_face(
 			  (cgv::media::font::FontFaceAttributes)text_face_attrib
 		  )),
 		  texture("uint8[R,G,B,A]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR),
@@ -157,7 +157,7 @@ public:
 			text_size = std::min(text_size, (unsigned)fb_resolution.y());
 		// Recreate the font face if the italic flag changed
 		if (member_ptr == &text_face_attrib)
-			font_face = cgv::media::font::find_font("times")->get_font_face(
+			font_face = cgv::media::font::find_font_or_default("times")->get_font_face(
 				(cgv::media::font::FontFaceAttributes)text_face_attrib
 			);
 

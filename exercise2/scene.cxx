@@ -239,7 +239,7 @@ void scene::construct_editor()
 	editor = cgv::gui::create_text_editor(660,400,"textedit",500,500);
 	editor->show();
 	editor->set_callback_handler(this);
-	editor->set_base_path("D:/");
+	editor->set_base_path(".");
 	editor->set_filter("*.isd");
 	editor->set_text_styles(get_text_style_table(), NR_TEXT_STYLES);
 	editor->set_text(description.c_str());

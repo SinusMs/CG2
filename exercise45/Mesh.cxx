@@ -169,7 +169,7 @@ void Mesh::set_skinning_matrices(const std::vector<Mat4>& matrices)
 		for (int j = 0; j < 16; ++j)
 			skinning_matrices[16 * i + j] = matrices[i][j];
 	}
-	n_bones = matrices.size();
+	n_bones = (int)matrices.size();
 }
 
 void Mesh::draw(cgv::render::context& ctx)
@@ -202,7 +202,7 @@ void Mesh::draw(cgv::render::context& ctx)
 		glDisableVertexAttribArray(2);
 	}	
 
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
 

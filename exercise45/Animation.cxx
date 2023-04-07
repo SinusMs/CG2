@@ -77,7 +77,7 @@ bool Animation::read_amc_file(std::string filename, Skeleton* s)
 	return true;
 }
 
-int Animation::frame_count() const { return frames.size(); }
+int Animation::frame_count() const { return (int)frames.size(); }
 
 void Animation::apply_frame(int frame) const
 {
