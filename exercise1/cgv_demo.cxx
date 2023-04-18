@@ -408,8 +408,14 @@ public:
 			texture.destruct(ctx);
 			init(ctx);
 		}
+	}
 
+	// Should be overwritten to sensibly implement the cgv::render::drawable interface
+	void draw (cgv::render::context& ctx)
+	{
+		////
 		// Render text to texture via framebuffer object
+
 		fb.enable(ctx);
 
 		// Usually, the framework takes care of clearing the (main) framebuffer, so in
@@ -436,11 +442,9 @@ public:
 			ctx.ref_default_shader_program().disable(ctx);
 		glPopAttrib();
 		fb.disable(ctx);
-	}
 
-	// Should be overwritten to sensibly implement the cgv::render::drawable interface
-	void draw (cgv::render::context& ctx)
-	{
+
+		////
 		// Draw the contents of this node.
 
 		// Shortcut to the built-in default shader with lighting and texture support
