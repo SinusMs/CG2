@@ -23,6 +23,17 @@ gl_implicit_surface_drawable::gl_implicit_surface_drawable()
 	res = 64;
 #endif
 	box_scale = 1.2f;
+
+	material.set_brdf_type((illum::BrdfType)(illum::BT_LAMBERTIAN | illum::BT_PHONG));
+	material.ref_diffuse_reflectance() = {.0625f, .25f, .45f};
+	material.ref_specular_reflectance() = {.0625f, .0625f, .0625f};
+	material.ref_emission() = {.03125f, 1/5.f, 1/3.f};
+	material.ref_roughness() = .0625f;
+	brs.material.set_brdf_type((illum::BrdfType)(illum::BT_LAMBERTIAN | illum::BT_PHONG));
+	brs.material.ref_diffuse_reflectance() = {.45f, .45f, .45f};
+	brs.material.ref_specular_reflectance() = {.0625f, .0625f, .0625f};
+	brs.material.ref_emission() = {.03125f, .03125f, .03125f};
+	brs.material.ref_roughness() = .03125f;
 }
 
 std::string gl_implicit_surface_drawable::get_type_name() const
@@ -221,10 +232,20 @@ void gl_implicit_surface_drawable::create_gui()
 		align("\a");
 		add_member_control(this, "show_&wireframe", show_wireframe, "check", "shortcut='W'");
 		//add_member_control(this, "ambient", material.ref_ambient(), "color<float,RGBA>");
-		add_member_control(this, "diffuse", material.ref_diffuse_reflectance(), "color<float,RGBA>");
-		add_member_control(this, "specular", material.ref_specular_reflectance(), "color<float,RGBA>");
-		add_member_control(this, "emission", material.ref_emission(), "color<float,RGBA>");
-		add_member_control(this, "roughness", material.ref_roughness(), "value_slider", "min=0;max=128;ticks=true");
+		static bool surface_mat_gui;
+		if (begin_tree_node("Surface Material", surface_mat_gui)) {
+			align("\a");
+			add_gui("material", material);
+			end_tree_node(surface_mat_gui);
+			align("\b");
+		}
+		static bool box_mat_gui;
+		if (begin_tree_node("Box Material", box_mat_gui)) {
+			align("\a");
+			add_gui("material", brs.material);
+			end_tree_node(box_mat_gui);
+			align("\b");
+		}
 		add_member_control(this, "&box", show_box, "check", "w=50;shortcut='b'", " ");
 		add_member_control(this, "scale", box_scale, "value_slider", "w=120;min=0.01;max=100;ticks=true;log=true");
 		add_gui("box", box, "",	"options='w=100;min=-10;max=10;step=0.01;ticks=true;align=\"BL\"';align_col=' '"); align("\n");
@@ -263,6 +284,11 @@ bool gl_implicit_surface_drawable::self_reflect(cgv::reflect::reflection_handler
 		rh.reflect_member("material_roughness", material.ref_roughness());
 }
 
+template <class T>
+bool in_member (void *ptr, const T& member) {
+	return ((char*)ptr)-((char*)&member) < sizeof(T);
+}
+
 void gl_implicit_surface_drawable::on_set(void* p)
 {
 	if (p == &box_scale) {
@@ -285,5 +311,8 @@ void gl_implicit_surface_drawable::on_set(void* p)
 	    p == &show_sampling_locations || p == &show_box || p == &show_mini_box || 
 		 p == &show_gradient_normals || p == &show_mesh_normals)
 			post_redraw();
+	else if (in_member(p, material) || in_member(p, brs.material))
+		post_redraw();
+
 	update_member(p);
 }

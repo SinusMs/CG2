@@ -12,6 +12,7 @@
 #include <cgv/render/shader_program.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
+#include <cgv/media/illum/surface_material.h>
 #include <cgv/math/ftransform.h>
 
 // Framework standard plugins
@@ -23,7 +24,13 @@
 
 cubes_fractal::cubes_fractal()
 	: va(nullptr), va_num_verts(0), va_primitive_type(GL_QUADS)
-{}
+{
+	material.set_brdf_type(
+		(cgv::media::illum::BrdfType)(cgv::media::illum::BT_LAMBERTIAN | cgv::media::illum::BT_PHONG)
+	);
+	material.ref_specular_reflectance() = {.0625f, .0625f, .0625f};
+	material.ref_roughness() = .03125f;
+}
 
 void cubes_fractal::use_vertex_array (
 	cgv::render::attribute_array_binding *vertex_array, size_t num_vertices,
