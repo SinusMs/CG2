@@ -11,6 +11,7 @@
 #include <cgv/render/view.h>
 #include <cgv/render/render_types.h>
 #include <cgv/base/find_action.h>
+#include <cgv/media/illum/surface_material.h>
 
 #include "math_helper.h"
 
@@ -26,6 +27,11 @@ SkeletonViewer::SkeletonViewer(DataStore* data)
 	connect(data->skeleton_changed, this, &SkeletonViewer::skeleton_changed);
 
 	connect(get_animation_trigger().shoot, this, &SkeletonViewer::timer_event);
+
+	// Prepare surface material
+	material.set_brdf_type((cgv::media::illum::BrdfType)(cgv::media::illum::BT_LAMBERTIAN | cgv::media::illum::BT_PHONG));
+	material.ref_specular_reflectance() = { .03125f, .03125f, .03125f };
+	material.ref_roughness() = .03125f;
 }
 
 //draws a part of a skeleton, represented by the given root node
