@@ -24,7 +24,9 @@ Advanced users may opt to build with CMake – however, the Framework only suppo
 ### Prerequisites
 To build the CGV Framework under Linux, several development packages related to OpenGL and low-level input device access are required. On Debian-based distributions, those are
 
-`libgl1-mesa-dev libxi-dev libxinerama-dev libglut-dev`|`freeglut3-dev`
+> `libgl1-mesa-dev libxi-dev libxinerama-dev libglut-dev`|`freeglut3-dev`
 
-### IDE
+as well as their respective dependencies, which should get pulled in automatically.
+
+> ### IDE
 To solve the exercise in a productive way under Linux, we do recommend using an IDE. Many current offerings (like the open source Visual Studio Code editor) support opening a CMake-enabled source tree directly. Currently, the Framework CMake build system will automatically generate launch and debug configurations for VS Code. But if you use any other IDE, you'll have to create launch/debug configs yourself. Shell scripts for launching the exercises will be created in your chosen CMake build directory, named `run_CG2_exercise1.sh`, `run_CG2_exercise2.sh` and `run_CG2_exercise45.sh`, respectively. You can inspect them to find out how to launch the `cgv_viewer` binary and provide it with the necessary command line arguments for each exercise, which you can then adapt for your IDE.
