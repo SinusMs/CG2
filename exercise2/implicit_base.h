@@ -4,7 +4,6 @@
 #include <cgv/media/color.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
-#include <cgv/render/render_types.h>
 
 using namespace cgv::base;
 using namespace cgv::math;
@@ -35,9 +34,9 @@ public:
 	/// type of primitive color
 	typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> clr_type;
 	/// type of 3d vector
-	typedef render_types::dvec3 vec_type;
+	typedef cgv::dvec3 vec_type;
 	/// type of 3d point
-	typedef render_types::dvec3 pnt_type;
+	typedef cgv::dvec3 pnt_type;
 
 protected:
 	scene_update_handler * update_handler;

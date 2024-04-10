@@ -6,7 +6,7 @@
 template <typename T>
 void skeleton<T>::append_edge(const edge_type& edge)
 {
-	edge_idx = edges.size();
+	edge_idx = (unsigned)edges.size();
 
 	edges.push_back(edge);
 	if (provider::find_control(edge_idx))

@@ -353,7 +353,7 @@ struct shear : public transformation<T>
 			0,    1,    1, 0,
 			0,    0,    0, 1
 		};
-		ctx.mul_modelview_matrix(render_types::dmat4(4, 4, M));
+		ctx.mul_modelview_matrix(cgv::dmat4(4, 4, M));
 		transformation<T>::draw(ctx);
 	}
 	std::string get_type_name() const

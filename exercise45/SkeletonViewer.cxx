@@ -9,7 +9,6 @@
 #include <cgv/gui/dialog.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/render/view.h>
-#include <cgv/render/render_types.h>
 #include <cgv/base/find_action.h>
 #include <cgv/media/illum/surface_material.h>
 

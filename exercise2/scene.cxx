@@ -296,7 +296,7 @@ bool scene::symbol_matches_description(unsigned int i, abst_scene_factory* facto
 		std::string symbol = to_string(tokens[j]);
 		if (i + symbol.size() <= description.size())
 			if (description.substr(i, symbol.size()) == symbol) {
-				offset = symbol.size();
+				offset = (unsigned)symbol.size();
 				return true;
 			}
 	}
