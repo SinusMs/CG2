@@ -417,21 +417,6 @@ public:
 	void draw(cgv::render::context& ctx)
 	{
 		////
-		// Preamble
-
-		// Save the OpenGL state pertaining to polygon rendering (we are going to change culling)
-		// so our settings won't spill over to other drawables.
-		glPushAttrib(GL_POLYGON_BIT);
-
-		// Enable backface culling since that would be the usual mode in practice.
-		// (AMD drivers as per the OpenGL spec typically have this disabled by default, and the CGV
-		// Framework makes no assumptions and just goes with whatever OpenGL initializes itself with.
-		// NVIDIA and Intel drivers appear to already initialize OpenGL with backface culling enabled.)
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-
-
-		////
 		// Render text to texture via framebuffer object
 
 		// Make our offscreen framebuffer the active render target
@@ -443,7 +428,7 @@ public:
 		// offscreen use.
 		// Also, we're adjusting the framework-managed viewport to be in line with the
 		// offscreen framebuffer dimensions, so save the current viewport as well.
-		glPushAttrib(GL_COLOR_BUFFER_BIT | GL_VIEWPORT_BIT);
+		glPushAttrib(GL_COLOR_BUFFER_BIT | GL_VIEWPORT_BIT | GL_POLYGON_BIT);
 		// Clear the offscreen color buffer with the desired background color
 		glClearColor(bgcolor.R(), bgcolor.G(), bgcolor.B(), bgcolor.alpha());
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -503,6 +488,7 @@ public:
 		// Draw back side
 		ctx.mul_modelview_matrix(cgv::math::rotate4(180.0, 0.0, 1.0, 0.0));
 		ctx.mul_modelview_matrix(cgv::math::scale4(-1.0, 1.0, 1.0));
+		glPushAttrib(GL_POLYGON_BIT);
 		glCullFace(GL_FRONT);
 		//*****************************************************************/
 		// Task 1.1: If enabled, render the quad with custom tesselation
@@ -512,18 +498,12 @@ public:
 				ctx.tesselate_unit_square();
 
 		//*****************************************************************/
+		glPopAttrib();
 		ctx.pop_modelview_matrix();
 
 		// Disable shader program and texture
 		default_shader.disable(ctx);
 		texture.disable(ctx);
-
-
-		////
-		// Epilogue
-
-		// Undo our OpenGL state changes
-		glPopAttrib();
 	}
 
 	// Creates the custom geometry for the quad
