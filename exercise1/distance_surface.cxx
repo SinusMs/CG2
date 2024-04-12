@@ -3,7 +3,7 @@
 #include "distance_surface.h"
 
 // ======================================================================================
-//  Task 2.2: GENERAL HINTS
+//  Task 1.2: GENERAL HINTS
 //
 //  The super class skeleton of distance_surface has a protected member called ::edges,
 //  which contains a list of all edges defined in the skeleton. Similarily, the super
@@ -19,7 +19,7 @@ typename distance_surface<T>::vec_type distance_surface<T>::get_edge_distance_ve
 {
 	vec_type v;
 
-	// Task 2.2: Compute the distance vector from edge i to p.
+	// Task 1.2: Compute the distance vector from edge i to p.
 
 	return v;
 }
@@ -29,7 +29,7 @@ double distance_surface<T>::get_min_distance_vector (const pnt_type &p, vec_type
 {
 	double min_dist;
 
-	// Task 2.2: Compute the minimum distance from the skeleton to p, and report the
+	// Task 1.2: Compute the minimum distance from the skeleton to p, and report the
 	//           corresponding distance vector in v.
 
 	return min_dist;
@@ -40,7 +40,7 @@ T distance_surface<T>::evaluate(const pnt_type& p) const
 {
 	double f_p = std::numeric_limits<double>::infinity();
 
-	// Task 2.2: Evaluate the distance surface function at p.
+	// Task 1.2: Evaluate the distance surface function at p.
 
 	return f_p;
 }
@@ -50,7 +50,7 @@ typename distance_surface<T>::vec_type distance_surface<T>::evaluate_gradient(co
 {
 	vec_type grad_f_p(0, 0, 0);
 
-	// Task 2.2: Return the gradient of the distance surface function at p.
+	// Task 1.2: Return the gradient of the distance surface function at p.
 
 	return grad_f_p;
 }

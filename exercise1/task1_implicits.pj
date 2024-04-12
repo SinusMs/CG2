@@ -1,5 +1,5 @@
 @=
-projectName="CG2_exercise2";
+projectName="task1_implicits";
 projectType="application_plugin";
 projectGUID="88A9C4EB-5FAD-40c9-99DE-B9F7C7476777";
 addIncDirs=[INPUT_DIR];

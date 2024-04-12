@@ -1,6 +1,6 @@
 @=
 projectType="application_plugin";
-projectName="CG2_exercise45";
+projectName="task34_animation";
 projectGUID="{EF373AC3-2821-49AE-AA72-CD128957F68A}";
 addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
 addIncDirs=[CGV_DIR."/libs"];

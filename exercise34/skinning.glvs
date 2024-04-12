@@ -15,6 +15,6 @@ void main(void)
 
 	if(skinned)
 	{
-		/*Task 5.6: Implement skinning */
+		/*Task 4.6: Implement skinning */
 	}
 }

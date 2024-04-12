@@ -13,11 +13,11 @@ struct box : public implicit_primitive<T>
 	void on_set(void* member_ptr) { implicit_base<T>::update_scene(); }
 
 	/*********************************************************************************/
-	/* Task 2.1a: If you need any auxiliary functions for this task, put them here.  */
+	/* Task 1.1a: If you need any auxiliary functions for this task, put them here.  */
 
 	// < your code >
 
-	/* [END] Task 2.1a
+	/* [END] Task 1.1a
 	/*********************************************************************************/
 
 	/// Evaluate the implicit box function at p
@@ -25,7 +25,7 @@ struct box : public implicit_primitive<T>
 	{
 		double f_p = std::numeric_limits<double>::infinity();
 
-		// Task 2.1a: Implement a function of p that evaluates to 0 on the unit cube.
+		// Task 1.1a: Implement a function of p that evaluates to 0 on the unit cube.
 		//            You may use any suitable distance metric.
 
 		return f_p;
@@ -36,7 +36,7 @@ struct box : public implicit_primitive<T>
 	{
 		vec_type grad_f_p(0, 0, 0);
 
-		// Task 2.1a: Return the gradient of the function at p.
+		// Task 1.1a: Return the gradient of the function at p.
 
 		return grad_f_p;
 	}

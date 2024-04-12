@@ -17,7 +17,7 @@ struct sphere : public implicit_primitive<T>
 	{
 		double f_p = std::numeric_limits<double>::infinity();
 
-		// Task 2.1a: Implement an algebraic function of p that evaluates to 0 on the
+		// Task 1.1a: Implement an algebraic function of p that evaluates to 0 on the
 		//            unit sphere.
 
 		return f_p;
@@ -28,7 +28,7 @@ struct sphere : public implicit_primitive<T>
 	{
 		vec_type grad_f_p(0, 0, 0);
 
-		// Task 2.1a: Return the gradient of the function at p.
+		// Task 1.1a: Return the gradient of the function at p.
 
 		return grad_f_p;
 	}

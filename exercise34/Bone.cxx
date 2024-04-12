@@ -35,19 +35,19 @@ void Bone::calculate_matrices()
 	orientationTransformLocalToGlobal = cgv::math::inv(orientationTransformGlobalToLocal);
 
 	////
-	// Task 4.1: Implement matrix calculation
+	// Task 3.1: Implement matrix calculation
 
 
 
 	////
-	// Task 5.6: Implement matrix calculation (skinning)
+	// Task 4.6: Implement matrix calculation (skinning)
 
 }
 
 Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
 {
 	////
-	// Task 4.1: Implement matrix calculation
+	// Task 3.1: Implement matrix calculation
 
 	Mat4 t;
 	return t;
@@ -56,7 +56,7 @@ Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
 Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 {
 	////
-	// Task 4.1: Implement matrix calculation
+	// Task 3.1: Implement matrix calculation
 
 	Mat4 t;
 	return t;

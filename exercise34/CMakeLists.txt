@@ -1,37 +1,45 @@
 
 # compile a list of source files for each specific source type the CGV CMake build system knows about
 set(SOURCES
-	box.cxx
-	csg.cxx
-	cylinder.cxx
-	distance_surface.cxx
-	gl_implicit_surface_drawable.cxx
-	implicit_base.cxx
-	implicit_group.cxx
-	implicit_primitive.cxx
-	knot_vector.cxx
-	numeric_gradient.cxx
-	scene.cxx
-	skeleton.cxx
-	sphere.cxx
-	transform.cxx
+	Animation.cxx
+	AtomicTransform.cxx
+	Bone.cxx
+	DataStore.cxx
+	IHasBoundingBox.cxx
+	IKViewer.cxx
+	Init.cxx
+	Mesh.cxx
+	Skeleton.cxx
+	SkeletonViewer.cxx
+	SkinnedMeshViewer.cxx
 )
 set(HEADERS
-	distance_surface.h
-	gl_implicit_surface_drawable.h
-	implicit_base.h
-	implicit_group.h
-	implicit_primitive.h
-	knot_vector.h
-	scene.h
-	skeleton.h
+	Animation.h
+	AnimationFrameBone.h
+	AtomicTransform.h
+	Bone.h
+	common.h
+	DataStore.h
+	IHasBoundingBox.h
+	IKViewer.h
+	math_helper.h
+	Mesh.h
+	Skeleton.h
+	SkeletonViewer.h
+	SkinnedMeshViewer.h
+)
+set(SHADERS
+	skinning.glfs
+	skinning.glgs
+	skinning.glvs
 )
 
 # add our target to the CGV CMake build system
-cgv_add_target(CG2_exercise2
+cgv_add_target(task34_animation
 	TYPE plugin    NO_EXECUTABLE
 	SOURCES        ${SOURCES}
 	HEADERS        ${HEADERS}
+	SHADER_SOURCES ${SHADERS}
 
 	DEPENDENCIES
 		cgv_viewer glew fltk cgv_utils cgv_type cgv_reflect cgv_data cgv_signal cgv_base cgv_media cgv_gui

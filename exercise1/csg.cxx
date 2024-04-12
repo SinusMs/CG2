@@ -3,7 +3,7 @@
 #include "implicit_group.h"
 
 // ======================================================================================
-//  Task 2.1b: GENERAL HINTS
+//  Task 1.1b: GENERAL HINTS
 //
 //  The common super class of all CSG nodes is implicit_group. This class defines a
 //  method ::get_implicit_child(unsigned int), which retrieves a pointer - already
@@ -28,7 +28,7 @@ public:
 	{
 		T value;
 
-		// Task 2.1b: You can outsource logic here that evaluates the operator function
+		// Task 1.1b: You can outsource logic here that evaluates the operator function
 		//            and reports the index of the relevant child in selected_i
 
 		return value;
@@ -38,7 +38,7 @@ public:
 	{
 		double f_p = std::numeric_limits<double>::infinity();
 
-		// Task 2.1b: Evaluate the union operator at p.
+		// Task 1.1b: Evaluate the union operator at p.
 
 		return f_p;
 	}
@@ -47,7 +47,7 @@ public:
 	{
 		vec_type grad_f_p(0, 0, 0);
 
-		// Task 2.1b: Return the gradient of the union operator at p
+		// Task 1.1b: Return the gradient of the union operator at p
 
 		return grad_f_p;
 	}
@@ -67,7 +67,7 @@ public:
 	{
 		T value;
 
-		// Task 2.1b: You can outsource logic here that evaluates the operator function
+		// Task 1.1b: You can outsource logic here that evaluates the operator function
 		//            and reports the index of the relevant child in selected_i
 
 		return value;
@@ -77,7 +77,7 @@ public:
 	{
 		double f_p = std::numeric_limits<double>::infinity();
 
-		// Task 2.1b: Evaluate the intersection operator at p.
+		// Task 1.1b: Evaluate the intersection operator at p.
 
 		return f_p;
 	}
@@ -86,7 +86,7 @@ public:
 	{
 		vec_type grad_f_p(0, 0, 0);
 
-		// Task 2.1b: Return the gradient of the intersection operator at p
+		// Task 1.1b: Return the gradient of the intersection operator at p
 
 		return grad_f_p;
 	}
@@ -106,7 +106,7 @@ public:
 	{
 		T value;
 
-		// Task 2.1b: You can outsource logic here that evaluates the operator function
+		// Task 1.1b: You can outsource logic here that evaluates the operator function
 		//            and reports the index of the relevant child in selected_i
 
 		return value;
@@ -116,7 +116,7 @@ public:
 	{
 		double f_p = std::numeric_limits<double>::infinity();
 
-		// Task 2.1b: Evaluate the difference operator at p.
+		// Task 1.1b: Evaluate the difference operator at p.
 
 		return f_p;
 	}
@@ -125,7 +125,7 @@ public:
 	{
 		vec_type grad_f_p(0, 0, 0);
 
-		// Task 2.1b: Return the gradient of the difference operator at p
+		// Task 1.1b: Return the gradient of the difference operator at p
 
 		return grad_f_p;
 	}

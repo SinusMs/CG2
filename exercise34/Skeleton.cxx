@@ -268,7 +268,7 @@ void Skeleton::write_pinocchio_file(const std::string& filename)
 
 	if (o)
 	{
-		/*Task 5.1: Write Pinocchio file into o */
+		/*Task 4.1: Write Pinocchio file into o */
 	}
 	o.close();
 }
@@ -286,7 +286,7 @@ void Skeleton::read_pinocchio_file(std::string filename)
 #endif
 	if (o)
 	{
-		/*Task 5.3: Read Pinocchio file */
+		/*Task 4.3: Read Pinocchio file */
 	}
 
 	o.close();
@@ -298,7 +298,7 @@ void Skeleton::read_pinocchio_file(std::string filename)
 
 void Skeleton::get_skinning_matrices(std::vector<Mat4>& matrices)
 {
-	/*Task 5.5: Calculate skinning matrices */
+	/*Task 4.5: Calculate skinning matrices */
 }
 
 

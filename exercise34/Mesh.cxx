@@ -148,7 +148,7 @@ void Mesh::read_attachment(std::string filename)
 
 	while (std::getline(f, line))
 	{
-		/*Task 5.5: Load pinocchio attachment */
+		/*Task 4.5: Load pinocchio attachment */
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, boneIndexBuffer);

@@ -37,7 +37,7 @@ SkeletonViewer::SkeletonViewer(DataStore* data)
 void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& global_to_parent_local, context& ctx, int level)
 {
 	////
-	// Task 4.2, 4.3: Visualize the skeleton
+	// Task 3.2, 4.3: Visualize the skeleton
 }
 
 void SkeletonViewer::timer_event(double, double dt)
@@ -283,7 +283,7 @@ void SkeletonViewer::generate_bone_gui(Bone* bone)
 void SkeletonViewer::draw(context& ctx)
 {
 	////
-	// Task 4.3: If you require it, extend this method with additional logic
+	// Task 3.3: If you require it, extend this method with additional logic
 
 	if (data->get_skeleton() != nullptr)
 		draw_skeleton_subtree(data->get_skeleton()->get_root(), data->get_skeleton()->get_origin(), ctx, 0);

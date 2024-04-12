@@ -72,29 +72,29 @@ public:
 	void calculate_matrices();
 
 	//Calculates a matrix that transforms the parent's local coordinate system to the current bone's local coordinate system (model transform). 
-	//It includes all dofs of the bone. Implemented in task 4.1
+	//It includes all dofs of the bone. Implemented in Task 3.1
 	Mat4 calculate_transform_prev_to_current_with_dofs();
 
 	//Calculates a matrix that transforms the parent's local coordinate system to the current bone's local coordinate system (model transform).
-	//It does not include any of the bone's dofs. Implemented in task 4.1.
+	//It does not include any of the bone's dofs. Implemented in Task 3.1.
 	Mat4 calculate_transform_prev_to_current_without_dofs();
 
 	//Returns a matrix that represents a translation from the current bone to the next bone in the current bone's local coordinate system.
-	//Implemented in task 4.1.
+	//Implemented in Task 3.1.
 	const Mat4& get_translation_transform_current_joint_to_next() const;
 
 	//Returns a matrix that represents a rotation from the previous bone to the current bone in the previous bone's local coordinate system.
-	//Implemented in task 4.1.
+	//Implemented in Task 3.1.
 	const Mat4& get_orientation_transform_prev_joint_to_current() const;
 
 	//Returns the zero-vector (with w-component 1)
 	Vec4 get_bone_local_root_position() const;
 
-	//Returns the position of the bone's tip in the bone's coordinate system. Available after implementing task 4.1.
+	//Returns the position of the bone's tip in the bone's coordinate system. Available after implementing Task 3.1.
 	Vec4 get_bone_local_tip_position() const;
 
 	//Returns the system transform that transforms positions from the global coordinate system to the bone's local coordinate system.
-	//Available after implementing task 4.6.
+	//Available after implementing Task 3.6.
 	const Mat4& get_binding_pose_matrix() const;
 
 private:
@@ -110,14 +110,14 @@ private:
 
 	//Calculated attributes
 	//Transform directions are specified for model transforms (system transforms are in the opposite direction)
-	Mat4 orientationTransformPrevJointToCurrent; //Rotation matrix that transforms from the previous bone to the current bone (in the previous bone's coordinate system); Task 4.1
-	Mat4 translationTransformCurrentJointToNext; //Translation matrix that transforms from the current bone to the next bone (in the current bone's coordinate system); Task 4.1
+	Mat4 orientationTransformPrevJointToCurrent; //Rotation matrix that transforms from the previous bone to the current bone (in the previous bone's coordinate system); Task 3.1
+	Mat4 translationTransformCurrentJointToNext; //Translation matrix that transforms from the current bone to the next bone (in the current bone's coordinate system); Task 3.1
 	Mat4 orientationTransformGlobalToLocal; //Rotation matrix that transforms from the global coordinate system to the current bone's local system. Available from the beginning.
 	Mat4 orientationTransformLocalToGlobal; //Rotation matrix that transforms from the current bone's local system to the global coordinate system. Available from the beginning.
 	//for skinning:
-	Mat4 translationTransformGlobalToLocal; //Translation matrix that transforms from the global coordinate system to the bone's local system. Task 5.6
-	Mat4 transformGlobalToLocal; //Combined rotation and translation that transforms from the global coordinate system to the bone's local system. Task 5.6
-	Mat4 transformLocalToGlobal;//Combined rotation and translation that transforms from the bone's local coordinate system to the global system. Task 5.6
+	Mat4 translationTransformGlobalToLocal; //Translation matrix that transforms from the global coordinate system to the bone's local system. Task 4.6
+	Mat4 transformGlobalToLocal; //Combined rotation and translation that transforms from the global coordinate system to the bone's local system. Task 4.6
+	Mat4 transformLocalToGlobal;//Combined rotation and translation that transforms from the bone's local coordinate system to the global system. Task 4.6
 
 	int translationTransforms; //The number of translation transforms that have been added as dof
 };

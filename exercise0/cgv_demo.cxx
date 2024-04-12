@@ -66,14 +66,14 @@ protected:
 	bool draw_backside;
 
 	//*********************************************************************************/
-	// Task 1.1: Add some data member to indicate whether to use custom tesselation of
+	// Task 0.1: Add some data member to indicate whether to use custom tesselation of
 	//           the quad or the one built into the cgv::render::context. Make sure to
 	//           initialize this to "do not use custom quad" when constructing the
 	//           object.
 
 	// < your code here >
 
-	// [END] Task 1.1
+	// [END] Task 0.1
 	//*********************************************************************************/
 
 
@@ -86,7 +86,7 @@ protected:
 	// Offscreen framebuffer
 	cgv::render::frame_buffer fb;
 	cgv::render::texture texture;
-	cgv::media::color<float> bgcolor;
+	cgv::rgba bgcolor;
 
 	// Geometry buffers
 	struct vertex {
@@ -134,7 +134,7 @@ public:
 		// integers for the purpose of reflection. A fix is in development.
 		unsigned* text_face_attrib_uint = (unsigned*)&text_face_attrib;
 
-		// Task 1.1: make sure your quad tesselation toggle can be set via config
+		// Task 0.1: make sure your quad tesselation toggle can be set via config
 		//           file.
 		// Reflect the properties
 		return
@@ -182,7 +182,7 @@ public:
 		}
 
 		//*****************************************************************************/
-		// Task 1.1: [OPTIONAL] If necessary, add additional handling for your custom
+		// Task 0.1: [OPTIONAL] If necessary, add additional handling for your custom
 		//           quad toggle here.
 
 		//*****************************************************************************/
@@ -247,7 +247,7 @@ public:
 		}
 
 		//*****************************************************************************/
-		// Task 1.1: [OPTIONAL] If necessary, add additional handling for your custom
+		// Task 0.1: [OPTIONAL] If necessary, add additional handling for your custom
 		//           quad toggle here.
 
 		//*****************************************************************************/
@@ -264,7 +264,7 @@ public:
 			fb_invalid = true;
 
 		//*****************************************************************************/
-		// Task 1.1: [OPTIONAL] If necessary, add additional handling for your custom
+		// Task 0.1: [OPTIONAL] If necessary, add additional handling for your custom
 		//           quad toggle here.
 
 		//*****************************************************************************/
@@ -331,12 +331,12 @@ public:
 		add_member_control(this, "draw backside", draw_backside);
 
 		//*****************************************************************************/
-		// Task 1.1: add a GUI control to switch between custom tesselation of the quad
+		// Task 0.1: add a GUI control to switch between custom tesselation of the quad
 		//           and the one built into the cgv::render::context.
 
 		// < Your code here >
 
-		// [END] Task 1.1
+		// [END] Task 0.1
 		//*****************************************************************************/
 	}
 
@@ -478,7 +478,7 @@ public:
 		));
 		// Draw front side
 		//*********************************************************************/
-		// Task 1.1: If enabled, render the quad with custom tesselation
+		// Task 0.1: If enabled, render the quad with custom tesselation
 		//           instead of using tesselate_unit_square(). You can invoke
 		//           the method draw_my_unit_square() for this.
 			ctx.tesselate_unit_square();
@@ -491,7 +491,7 @@ public:
 		glPushAttrib(GL_POLYGON_BIT);
 		glCullFace(GL_FRONT);
 		//*****************************************************************/
-		// Task 1.1: If enabled, render the quad with custom tesselation
+		// Task 0.1: If enabled, render the quad with custom tesselation
 		//           instead of using tesselate_unit_square(). Again, you
 		//           can invoke the method draw_my_unit_square() for this.
 			if (draw_backside)
