@@ -362,8 +362,8 @@ struct shear : public transformation<T>
 	}	
 };
 
-scene_factory_registration<rotation<double> >sfr_rotation("rotate;r");
-scene_factory_registration<translation<double> >sfr_translation("translate;t");
-scene_factory_registration<scaling<double> >sfr_scaling("scale;s");
+scene_factory_registration<rotation<double> >sfr_rotation("rotate");
+scene_factory_registration<translation<double> >sfr_translation("translate");
+scene_factory_registration<scaling<double> >sfr_scaling("scale");
 scene_factory_registration<shear<double> >sfr_shear("shear");
-scene_factory_registration<uniform_scaling<double> >sfr_uniform_scaling("scale_uniform;u");
+scene_factory_registration<uniform_scaling<double> >sfr_uniform_scaling("scale_uniform");
