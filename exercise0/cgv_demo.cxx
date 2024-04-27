@@ -78,7 +78,7 @@ protected:
 
 	// [END] Task 0.1
 	//*********************************************************************************/
-
+	bool enable = true;
 
 	////
 	// Internal stuff we don't expose via reflection
@@ -151,7 +151,8 @@ public:
 			rh.reflect_member("fb_bgcolor_b", fb_bgcolor_b) &&
 			rh.reflect_member("wireframe", wireframe) &&
 			rh.reflect_member("draw_backside", draw_backside) &&
-			rh.reflect_member("use_custom_quad", use_custom_quad);
+			rh.reflect_member("use_custom_quad", use_custom_quad) &&
+			rh.reflect_member("enable", enable);
 	}
 
 	// Part of the cgv::base::base interface, should be implemented to respond to write
@@ -281,6 +282,8 @@ public:
 	// Required interface for cgv::gui::provider
 	void create_gui(void)
 	{
+		add_decorator("General Settings", "heading", "level=1");
+		add_member_control(this, "Enable", enable);
 		// Simple controls. Notifies us of GUI input via the on_set() method.
 		// - section header
 		add_decorator("Text properties", "heading", "level=1");
@@ -423,6 +426,7 @@ public:
 	// Should be overwritten to sensibly implement the cgv::render::drawable interface
 	void draw(cgv::render::context& ctx)
 	{
+		if (!enable) return;
 		////
 		// Render text to texture via framebuffer object
 
