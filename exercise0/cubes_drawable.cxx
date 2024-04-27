@@ -37,7 +37,28 @@
 //            should support (again, configurable via GUI and config file) both
 //            interleaved (as in cgv_demo.cpp) and non-interleaved attributes.
 
-// < your code here >
+class cubes_dawable : public cgv::base::base, public cgv::gui::provider, public cgv::render::drawable
+{
+	std::string get_type_name(void) const
+	{
+		return "Cube Fractal";
+	}
+
+	bool self_reflect(cgv::reflect::reflection_handler& rh)
+	{
+		return false;
+	}
+
+	void on_set(void* member_ptr)
+	{
+		
+	}
+
+	void create_gui(void)
+	{
+	
+	}
+};
 
 // [END] Tasks 0.2a, 0.2b and 0.2c
 // ************************************************************************************/
@@ -46,4 +67,4 @@
 // ************************************************************************************/
 // Task 0.2a: register an instance of your drawable.
 
-// < your code here >
+cgv::base::object_registration<cubes_dawable> cubes_dawable_registration("cubes_dawable");
