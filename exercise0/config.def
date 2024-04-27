@@ -10,7 +10,7 @@ type(cgv_demo):fb_bgcolor_g=0.9
 type(cgv_demo):fb_bgcolor_b=1
 type(cgv_demo):wireframe=false
 type(cgv_demo):draw_backside=true
-type(cgv_demo):enable=true
+type(cgv_demo):enable=false
 
 /// Task 0.1: Set the custom tesselation of the quad to be used initially by cgv_demo via
 ///           your reflected property.
@@ -18,3 +18,8 @@ type(cgv_demo):enable=true
 type(cgv_demo):use_custom_quad=true
 
 /// Task 0.2: Set appropriate values for your drawable that renders the cube fractal.
+type(Cube Fractal):enable=true
+type(Cube Fractal):r=1.0
+type(Cube Fractal):g=0.15
+type(Cube Fractal):b=0.55
+type(Cube Fractal):max_depth=2

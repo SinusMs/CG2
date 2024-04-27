@@ -37,8 +37,17 @@
 //            should support (again, configurable via GUI and config file) both
 //            interleaved (as in cgv_demo.cpp) and non-interleaved attributes.
 
-class cubes_dawable : public cgv::base::base, public cgv::gui::provider, public cgv::render::drawable
+class cubes_drawable : public cgv::base::base, public cgv::gui::provider, public cgv::render::drawable
 {
+protected:
+	bool enable;
+	float r, g, b;
+	cgv::rgb color;
+	unsigned max_depth;
+
+public:
+	cubes_drawable() : enable(false), r(1.0), g(1.0), b(1.0), color(r, g, b), max_depth(3) { }
+
 	std::string get_type_name(void) const
 	{
 		return "Cube Fractal";
@@ -46,17 +55,52 @@ class cubes_dawable : public cgv::base::base, public cgv::gui::provider, public 
 
 	bool self_reflect(cgv::reflect::reflection_handler& rh)
 	{
-		return false;
+		return rh.reflect_member("enable", enable) &&
+			rh.reflect_member("r", r) &&
+			rh.reflect_member("g", g) &&
+			rh.reflect_member("b", b) &&
+			rh.reflect_member("max_depth", max_depth);
 	}
 
 	void on_set(void* member_ptr)
 	{
-		
+		// Reflect the change to r/g/b in color (can only happen via reflection)
+		if (member_ptr == &r || member_ptr == &g ||	member_ptr == &b)
+		{
+			color.R() = r;
+			color.G() = g;
+			color.B() = b;
+			update_member(&color);
+		}
+		// ...and vice versa (can only happen via GUI interaction)
+		if (member_ptr == &color)
+		{
+			r = color.R();
+			g = color.G();
+			b = color.B();
+		}
+		update_member(member_ptr);
+		if (this->is_visible())
+			post_redraw();
 	}
 
 	void create_gui(void)
 	{
-	
+		add_member_control(this, "Enable", enable);
+		add_member_control(this, "Color", color);
+		add_member_control(this, "Max Depth", max_depth);
+	}
+
+	void draw(cgv::render::context& ctx)
+	{
+		if (!enable) return;
+
+		cgv::render::shader_program& default_shader = ctx.ref_surface_shader_program();
+		default_shader.enable(ctx);
+
+		cubes_fractal fractal = cubes_fractal();
+		
+		fractal.draw_recursive(ctx, color, max_depth);
 	}
 };
 
@@ -67,4 +111,4 @@ class cubes_dawable : public cgv::base::base, public cgv::gui::provider, public 
 // ************************************************************************************/
 // Task 0.2a: register an instance of your drawable.
 
-cgv::base::object_registration<cubes_dawable> cubes_dawable_registration("cubes_dawable");
+cgv::base::object_registration<cubes_drawable> cubes_drawable_registration("cubes_drawable");
