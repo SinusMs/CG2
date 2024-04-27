@@ -23,3 +23,4 @@ type(Cube Fractal):r=1.0
 type(Cube Fractal):g=0.15
 type(Cube Fractal):b=0.55
 type(Cube Fractal):max_depth=2
+type(Cube Fractal):drawing_mode=2
