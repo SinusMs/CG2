@@ -1,5 +1,5 @@
 ﻿// This source code is property of the Computer Graphics and Visualization chair of the
-// TU Dresden. Do not distribute! 
+// TU Dresden. Do not distribute!
 // Copyright (C) CGV TU Dresden - All Rights Reserved
 //
 // The main file of the plugin. It defines a class that demonstrates how to register with
@@ -47,7 +47,7 @@ protected:
 	unsigned int text_size;
 
 	// Whether the text should be rendered in normal or italic face
-	enum FontFaceAttrib { REGULAR, BOLD, ITALIC, BOLD_ITALIC } text_face_attrib;
+	enum FontFaceAttrib {REGULAR, BOLD, ITALIC, BOLD_ITALIC } text_face_attrib;
 
 	// Text position in cursor coordinates
 	cgv::math::fvec<int, 2> text_pos;
@@ -75,6 +75,8 @@ protected:
 	//           object.
 
 	// < your code here >
+
+	bool use_custom_quad;
 
 	// [END] Task 0.1
 	//*********************************************************************************/
@@ -109,18 +111,18 @@ public:
 
 	// Default constructor
 	cgv_demo()
-		: text("Hello World"), text_size(24), text_face_attrib(REGULAR), text_pos(8, 32),
+		: text("Hello World"), text_size(24), 	text_face_attrib(REGULAR), text_pos(8, 32),
 		  fb_resolution(512, 256), fb_invalid(true),
 		  texture("uint8[R,G,B,A]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR),
 		  fb_bgcolor_r(0.9f), fb_bgcolor_g(0.9f), fb_bgcolor_b(0.9f),
-		  bgcolor(fb_bgcolor_r, fb_bgcolor_g, fb_bgcolor_b), draw_backside(true), wireframe(false)
+		  bgcolor(fb_bgcolor_r, fb_bgcolor_g, fb_bgcolor_b), draw_backside(true), wireframe(false), use_custom_quad(false)
 	{
 		// Make sure the font server knows about the fonts packaged with the exercise
 		cgv::scan_fonts("./data/Fonts");
 		font_face = cgv::media::font::find_font_or_default("Open Sans", true)->get_font_face(
 			(cgv::media::font::FontFaceAttributes)text_face_attrib
 		);
-		
+
 	}
 
 	// Should be overwritten to sensibly implement the cgv::base::named interface
@@ -150,7 +152,9 @@ public:
 			rh.reflect_member("fb_bgcolor_g", fb_bgcolor_g) &&
 			rh.reflect_member("fb_bgcolor_b", fb_bgcolor_b) &&
 			rh.reflect_member("wireframe", wireframe) &&
-			rh.reflect_member("draw_backside", draw_backside);
+			rh.reflect_member("draw_backside", draw_backside) &&
+			rh.reflect_member("use_custom_quad", use_custom_quad);
+
 	}
 
 	// Part of the cgv::base::base interface, should be implemented to respond to write
@@ -341,7 +345,7 @@ public:
 		//           and the one built into the cgv::render::context.
 
 		// < Your code here >
-
+		add_member_control(this, "custom quad", use_custom_quad);
 		// [END] Task 0.1
 		//*****************************************************************************/
 	}
@@ -492,7 +496,11 @@ public:
 		// Task 0.1: If enabled, render the quad with custom tesselation
 		//           instead of using tesselate_unit_square(). You can invoke
 		//           the method draw_my_unit_square() for this.
+		if (use_custom_quad) {
+			draw_my_unit_square(ctx);
+		} else {
 			ctx.tesselate_unit_square();
+		}
 
 		//*********************************************************************/
 
@@ -504,8 +512,14 @@ public:
 		// Task 0.1: If enabled, render the quad with custom tesselation
 		//           instead of using tesselate_unit_square(). Again, you
 		//           can invoke the method draw_my_unit_square() for this.
-			if (draw_backside)
+
+		if (draw_backside) {
+			if (use_custom_quad) {
+				draw_my_unit_square(ctx);
+			} else {
 				ctx.tesselate_unit_square();
+			}
+		}
 
 		//*****************************************************************/
 		glPopAttrib();
@@ -541,9 +555,7 @@ public:
 };
 
 // Create an instance of the demo class at plugin load and register it with the framework
-cgv::base::object_registration<cgv_demo> cgv_demo_registration(
-	"cgv_demo" // <-- some arbitrary registration event tag that can be useful for advanced debugging
-);
+// cgv::base::object_registration<cgv_demo> cgv_demo_registration("cgv demo");
 
 // The following could be used to register the class with the framework but NOT create it
 // upon plugin load. Instead, the user can create an instance from the application menu.
