@@ -61,6 +61,7 @@ protected:
 	cgv::render::attribute_array_binding vertex_array_noninterleaved;
 
 	bool fractal_dirty;
+	cgv::media::illum::surface_material material;
 	struct fractal_vertex {
 		fractal_vertex(vertex v, cgv::media::color<float> color) : pos(v.pos), normal(v.normal), color(color) {}
 		cgv::vec3 pos;
@@ -72,7 +73,11 @@ protected:
 	cgv::render::attribute_array_binding vertex_array_fractal;
 
 public:
-	cubes_drawable() : enable(false), r(1.0), g(1.0), b(1.0), color(r, g, b), max_depth(3), drawing_mode(NONINTERLEAVED), fractal_dirty(true) { }
+	cubes_drawable() : enable(false), r(1.0), g(1.0), b(1.0), color(r, g, b), max_depth(3), drawing_mode(NONINTERLEAVED), fractal_dirty(true) {
+		material.set_brdf_type((cgv::media::illum::BrdfType)(cgv::media::illum::BT_LAMBERTIAN | cgv::media::illum::BT_PHONG));
+		material.ref_specular_reflectance() = { .0625f, .0625f, .0625f };
+		material.ref_roughness() = .03125f;
+	}
 
 	std::string get_type_name(void) const
 	{
@@ -93,7 +98,7 @@ public:
 
 	void on_set(void* member_ptr)
 	{
-		if (drawing_mode == SINGLE_VERTEX_BUFFER) fractal_dirty = true;
+		if (drawing_mode == SINGLE_VERTEX_BUFFER && member_ptr != &enable) fractal_dirty = true;
 		if (member_ptr == &r || member_ptr == &g ||	member_ptr == &b)
 		{
 			color.R() = r;
@@ -164,6 +169,13 @@ public:
 					fractal_dirty = false;
 					init_fractal_vao(ctx, color);
 				}
+
+				// for some unkonwn reason the cubes are not drawn in the color that I specify in the 'vertex_array_fractal' vao, 
+				// so i just set the color for all cubes via material so they are not just grey
+				// (See debug messages in function 'init_fractal_vao')
+				material.set_diffuse_reflectance(color);
+				ctx.set_material(material);
+
 				vertex_array_fractal.enable(ctx);
 				glDrawArrays(GL_QUADS, 0, fractal_vertices.size());
 				vertex_array_fractal.disable(ctx);
@@ -221,11 +233,13 @@ public:
 	void init_fractal_vao(cgv::render::context& ctx, const cgv::media::color<float>& color) {
 		fractal_vertices.clear();
 		init_fractal_vao_rec(color);
+		/*
 		for each (fractal_vertex v in fractal_vertices) {
 			std::cout << "Pos: " << v.pos << std::endl;
 			std::cout << "Nor: " << v.normal << std::endl;
 			std::cout << "Col: " << v.color << std::endl << std::endl;
 		}
+		*/
 
 		cgv::render::type_descriptor 
 			vec3type = cgv::render::element_descriptor_traits<cgv::vec3>::get_type_descriptor(fractal_vertices[0].pos),
@@ -241,9 +255,7 @@ public:
 
 	void init_fractal_vao_rec(const cgv::media::color<float>& color, cgv::dmat4 mat = cgv::math::scale4<double>(1, 1, 1), unsigned level = 0)
 	{
-		//std::cout << mat << std::endl << std::endl;
 		mat *= cgv::math::scale4<double>(.5, .5, .5);
-		//std::cout << cgv::math::scale4<double>(1, 1, 1) * cgv::math::scale4<double>(.5, .5, .5) << std::endl;
 
 		for each (vertex v in vertices_interleaved)
 		{
