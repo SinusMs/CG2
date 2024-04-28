@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 [Buildset]
 BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x06\x00C\x00G\x002)
 
+=======
+>>>>>>> be12f7e (cmake änderungen)
 [CMake]
 Build Directory Count=1
 Current Build Directory Index-Host System=0
@@ -16,7 +19,11 @@ Install Directory=/usr/local
 Runtime=Host System
 
 [Launch]
+<<<<<<< HEAD
 Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2,Launch Configuration 3,Launch Configuration 4,Launch Configuration 5,Launch Configuration 6,Launch Configuration 7
+=======
+Launch Configurations=Launch Configuration 0
+>>>>>>> be12f7e (cmake änderungen)
 
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
@@ -25,12 +32,16 @@ Name=run_task0_framework.sh
 Type=Script Application
 
 [Launch][Launch Configuration 0][Data]
+<<<<<<< HEAD
 Configured from ProjectItem=CG2,build,run_task0_framework.sh
+=======
+>>>>>>> be12f7e (cmake änderungen)
 Executable=file:///home/frederik/source/repos/marcg2/CG2/build/run_task0_framework.sh
 Interpreter=bash
 Output Filtering Mode=2
 Run current file=false
 
+<<<<<<< HEAD
 [Launch][Launch Configuration 1]
 Configured Launch Modes=execute
 Configured Launchers=scriptAppLauncher
@@ -119,5 +130,7 @@ Interpreter=bash
 Output Filtering Mode=2
 Run current file=false
 
+=======
+>>>>>>> be12f7e (cmake änderungen)
 [Project]
 VersionControlSupport=kdevgit
