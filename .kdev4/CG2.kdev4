@@ -1,0 +1,31 @@
+[CMake]
+Build Directory Count=1
+Current Build Directory Index-Host System=0
+
+[CMake][CMake Build Directory 0]
+Build Directory Path=/home/frederik/source/repos/marcg2/CG2/build
+Build Type=Debug
+CMake Binary=/usr/bin/cmake
+CMake Executable=/usr/bin/cmake
+Environment Profile=
+Extra Arguments=
+Install Directory=/usr/local
+Runtime=Host System
+
+[Launch]
+Launch Configurations=Launch Configuration 0
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=scriptAppLauncher
+Name=run_task0_framework.sh
+Type=Script Application
+
+[Launch][Launch Configuration 0][Data]
+Executable=file:///home/frederik/source/repos/marcg2/CG2/build/run_task0_framework.sh
+Interpreter=bash
+Output Filtering Mode=2
+Run current file=false
+
+[Project]
+VersionControlSupport=kdevgit

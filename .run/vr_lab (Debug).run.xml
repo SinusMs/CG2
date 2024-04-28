@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="vr_lab (Debug)" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="plugin:cg_fltk type(shader_config):shader_path='/home/frederik/source/repos/marcg2/CG2/cgv/libs/cgv_gl/glsl;/home/frederik/source/repos/marcg2/CG2/cgv/libs/cgv_proc/glsl;/home/frederik/source/repos/marcg2/CG2/cgv/plugins/crg_vr_view' plugin:crg_vr_view plugin:vr_emulator plugin:cg_ext plugin:cmi_io plugin:crg_grid plugin:openvr_driver plugin:vr_lab config:&quot;/home/frederik/source/repos/marcg2/CG2/cgv/plugins/vr_lab/config.def&quot;" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="true" WORKING_DIR="file:///home/frederik/source/repos/marcg2/CG2/cgv" PASS_PARENT_ENVS_2="true" PROJECT_NAME="CG2" TARGET_NAME="vr_lab" CONFIG_NAME="Debug" RUN_PATH="/home/frederik/source/repos/marcg2/CG2/build/cgv/bin/cgv_viewer">
+    <envs>
+      <env name="CGV_DIR" value="/home/frederik/source/repos/marcg2/CG2/cgv" />
+      <env name="CGV_OPTIONS" value="" />
+    </envs>
+    <method v="2">
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>
