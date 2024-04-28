@@ -98,7 +98,7 @@ public:
 
 	void on_set(void* member_ptr)
 	{
-		if (drawing_mode == SINGLE_VERTEX_BUFFER && member_ptr != &enable) fractal_dirty = true;
+		if ((drawing_mode == SINGLE_VERTEX_BUFFER || member_ptr != &drawing_mode) && member_ptr != &enable) fractal_dirty = true;
 		if (member_ptr == &r || member_ptr == &g ||	member_ptr == &b)
 		{
 			color.R() = r;
@@ -262,6 +262,12 @@ public:
 			fractal_vertex fv = fractal_vertex(v, color);
 			fv.pos = mat.mul_pos(fv.pos);
 			fractal_vertices.push_back(fv);
+		}
+
+		for (int i = 0; i < fractal_vertices.size(); i += 4) {
+			cgv::vec3 normal = cgv::math::cross(fractal_vertices[i+1].pos - fractal_vertices[i].pos, fractal_vertices[i + 2].pos - fractal_vertices[i + 1].pos);
+			//normal.normalize(); //commented out for performance reasons
+			for (int j = 0; j < 4; j++) fractal_vertices[i + j].normal = normal;
 		}
 
 		cgv::media::color<float, cgv::media::HLS> color_next(color);
