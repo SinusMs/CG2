@@ -39,7 +39,7 @@ protected:
 
 	////
 	// Stuff we expose via reflection
-
+	bool enable;
 	// Some text
 	std::string text;
 
@@ -109,7 +109,7 @@ public:
 
 	// Default constructor
 	cgv_demo()
-		: text("Hello World"), text_size(24), text_face_attrib(REGULAR), text_pos(8, 32),
+		: enable(false), text("Hello World"), text_size(24), text_face_attrib(REGULAR), text_pos(8, 32),
 		  fb_resolution(512, 256), fb_invalid(true),
 		  texture("uint8[R,G,B,A]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR),
 		  fb_bgcolor_r(0.9f), fb_bgcolor_g(0.9f), fb_bgcolor_b(0.9f),
@@ -141,6 +141,7 @@ public:
 		//           file.
 		// Reflect the properties
 		return
+			rh.reflect_member("enable", enable) &&
 			rh.reflect_member("text", text) &&
 			rh.reflect_member("text_face_attrib", *text_face_attrib_uint) &&
 			rh.reflect_member("text_size", text_size) &&
@@ -284,6 +285,7 @@ public:
 		// Simple controls. Notifies us of GUI input via the on_set() method.
 		// - section header
 		add_decorator("Text properties", "heading", "level=1");
+		add_member_control(this, "show", enable);
 		// - the text
 		add_member_control(this, "contents", text);
 		// - the text size
@@ -425,7 +427,7 @@ public:
 	{
 		////
 		// Render text to texture via framebuffer object
-
+		if (!enable) return;
 		// Make our offscreen framebuffer the active render target
 		fb.enable(ctx);
 
@@ -493,8 +495,8 @@ public:
 		// Task 0.1: If enabled, render the quad with custom tesselation
 		//           instead of using tesselate_unit_square(). You can invoke
 		//           the method draw_my_unit_square() for this.
-		if (!use_custom_quad) { ctx.tesselate_unit_square(); }
-		else { draw_my_unit_square(ctx); }
+		if (use_custom_quad) { draw_my_unit_square(ctx); }
+		else { ctx.tesselate_unit_square(); }
 
 		//*********************************************************************/
 
@@ -506,12 +508,14 @@ public:
 		// Task 0.1: If enabled, render the quad with custom tesselation
 		//           instead of using tesselate_unit_square(). Again, you
 		//           can invoke the method draw_my_unit_square() for this.
-			if (draw_backside)
-				if (!use_custom_quad) {
-					ctx.tesselate_unit_square();
-				} else {
-					draw_my_unit_square(ctx);
-				}
+		if (draw_backside) {
+			if (use_custom_quad) {
+				draw_my_unit_square(ctx);
+			}
+			else {
+				ctx.tesselate_unit_square(); ;
+			}
+		}
 			
 		//*****************************************************************/
 		glPopAttrib();

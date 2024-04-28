@@ -47,12 +47,13 @@ protected:
 	int recursion_depth;
 	float root_color_r, root_color_g, root_color_b;
 	cgv::rgba root_color;
+	bool enable;
 
 public:
 	cubes_drawable() :
 		recursion_depth(3), 
 		root_color_r(0.9f), root_color_g(0.0f), root_color_b(0.1f),
-		root_color(root_color_r, root_color_g, root_color_b) {}
+		root_color(root_color_r, root_color_g, root_color_b), enable(true) {}
 
 
 	std::string get_type_name(void) const {
@@ -61,6 +62,7 @@ public:
 
 	bool self_reflect(cgv::reflect::reflection_handler& rh) {
 		return 
+			rh.reflect_member("enable", enable) &&
 			rh.reflect_member("recursion_depth", recursion_depth) &&
 			rh.reflect_member("root_color_r", root_color_r) &&
 			rh.reflect_member("root_color_g", root_color_g) &&
@@ -98,21 +100,17 @@ public:
 	}
 
 	void create_gui(void) {
-		add_decorator("Offscreen framebuffer", "heading", "level=1");
+		add_member_control(this, "show", enable);
 
-
-		
 		cgv::gui::control<int>* ctrl = add_control(
 			"recursion_depth", recursion_depth, "value_slider",
 			"min=0;max=5" ";ticks=false"
 		).operator->();
 		
-
 		add_member_control(this, "root_color", root_color);
 
 		cgv::signal::connect(ctrl->check_value, this, &cubes_drawable::gui_check_value);
 		cgv::signal::connect(ctrl->value_change, this, &cubes_drawable::gui_value_changed);
-
 	}
 
 	bool init(cgv::render::context& ctx) {
@@ -126,6 +124,8 @@ public:
 	}
 
 	void draw(cgv::render::context& ctx) {
+		if (!enable) return;
+
 		glPushAttrib(GL_COLOR_BUFFER_BIT | GL_VIEWPORT_BIT | GL_POLYGON_BIT);
 		GL_POLYGON_BIT;
 		// glClearColor(root_color.R(), root_color.G(), root_color.B(), root_color.alpha());

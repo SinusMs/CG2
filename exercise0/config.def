@@ -3,6 +3,7 @@
 type(fltk_viewer_window):theme=dark
 
 // Demo settings
+type(cgv_demo):enable=false
 type(cgv_demo):text="Hallo Welt"
 type(cgv_demo):text_face_attrib=2
 type(cgv_demo):fb_bgcolor_r=0.8
@@ -18,6 +19,7 @@ type(cgv_demo):use_custom_quad=false
 
 /// Task 0.2: Set appropriate values for your drawable that renders the cube fractal.
 //Cubes settings
+type(cubes_drawable):enable=true
 type(cubes_drawable):recursion_depth=4
 type(cgv_demo):root_color_r=0.9
 type(cgv_demo):root_color_g=0.0
