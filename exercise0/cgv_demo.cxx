@@ -81,6 +81,7 @@ protected:
 	// [END] Task 0.1
 	//*********************************************************************************/
 
+	bool enable = true;
 
 	////
 	// Internal stuff we don't expose via reflection
@@ -153,7 +154,8 @@ public:
 			rh.reflect_member("fb_bgcolor_b", fb_bgcolor_b) &&
 			rh.reflect_member("wireframe", wireframe) &&
 			rh.reflect_member("draw_backside", draw_backside) &&
-			rh.reflect_member("use_custom_quad", use_custom_quad);
+			rh.reflect_member("use_custom_quad", use_custom_quad) &&
+			rh.reflect_member("enable", enable);
 
 	}
 
@@ -284,6 +286,7 @@ public:
 	// Required interface for cgv::gui::provider
 	void create_gui(void)
 	{
+		add_member_control(this, "Enable", enable);
 		// Simple controls. Notifies us of GUI input via the on_set() method.
 		// - section header
 		add_decorator("Text properties", "heading", "level=1");
@@ -426,6 +429,7 @@ public:
 	// Should be overwritten to sensibly implement the cgv::render::drawable interface
 	void draw(cgv::render::context& ctx)
 	{
+		if (!enable) return;
 		////
 		// Render text to texture via framebuffer object
 
@@ -555,7 +559,7 @@ public:
 };
 
 // Create an instance of the demo class at plugin load and register it with the framework
-// cgv::base::object_registration<cgv_demo> cgv_demo_registration("cgv demo");
+cgv::base::object_registration<cgv_demo> cgv_demo_registration("cgv demo");
 
 // The following could be used to register the class with the framework but NOT create it
 // upon plugin load. Instead, the user can create an instance from the application menu.

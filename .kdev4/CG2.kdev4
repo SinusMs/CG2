@@ -1,3 +1,6 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x06\x00C\x00G\x002)
+
 [CMake]
 Build Directory Count=1
 Current Build Directory Index-Host System=0
@@ -22,6 +25,7 @@ Name=run_task0_framework.sh
 Type=Script Application
 
 [Launch][Launch Configuration 0][Data]
+Configured from ProjectItem=CG2,build,run_task0_framework.sh
 Executable=file:///home/frederik/source/repos/marcg2/CG2/build/run_task0_framework.sh
 Interpreter=bash
 Output Filtering Mode=2
