@@ -39,11 +39,68 @@
 
 // < your code here >
 
+class cubes_drawable
+	: public cgv::base::base,      // This class supports reflection
+	public cgv::gui::provider,   // Instances of this class provde a GUI
+	public cgv::render::drawable // Instances of this class can be rendered
+{
+protected:
+	int recursion_depth;
+
+	// Geometry buffers
+	struct vertex {
+		cgv::vec3 pos;
+	};
+	std::vector<vertex> vertices;
+	cgv::render::vertex_buffer vb;
+	cgv::render::attribute_array_binding vertex_array;
+
+
+public:
+	cubes_drawable() {
+
+	}
+
+	std::string get_type_name(void) const
+	{
+		return "cubes_drawable";
+	}
+
+	bool self_reflect(cgv::reflect::reflection_handler& rh)
+	{
+		return rh.reflect_member("recursion_depth", recursion_depth);
+	}
+
+	void on_set(void* member_ptr) {
+
+		
+		update_member(member_ptr);
+
+		// Also trigger a redraw in case the drawable node is active
+		if (this->is_visible())
+			post_redraw();
+	}
+
+	void create_gui(void) {
+		cgv::gui::control<int>* ctrl = add_control(
+			"recursion depth", recursion_depth, "value_slider",
+			"min=0;max=8;ticks=false"
+		).operator->();
+
+	//	add_member_control(this, "recursion depth", recursion_depth);
+	}
+};
+
 // [END] Tasks 0.2a, 0.2b and 0.2c
 // ************************************************************************************/
 
 
 // ************************************************************************************/
 // Task 0.2a: register an instance of your drawable.
+cgv::base::object_registration<cubes_drawable> cgv_demo_registration("");
 
-// < your code here >
+cgv::base::factory_registration<cubes_drawable> cgv_demo_factory(
+	"new/recursive cubes", // menu path
+	'D',            // the shortcut - capital D means ctrl+d
+	true            // whether the class is supposed to be a singleton
+);
