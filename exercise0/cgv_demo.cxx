@@ -75,6 +75,7 @@ protected:
 	//           object.
 
 	// < your code here >
+	bool custom_tesselation;
 
 	// [END] Task 0.1
 	//*********************************************************************************/
@@ -150,7 +151,8 @@ public:
 			rh.reflect_member("fb_bgcolor_g", fb_bgcolor_g) &&
 			rh.reflect_member("fb_bgcolor_b", fb_bgcolor_b) &&
 			rh.reflect_member("wireframe", wireframe) &&
-			rh.reflect_member("draw_backside", draw_backside);
+			rh.reflect_member("draw_backside", draw_backside)&&
+			rh.reflect_member("custom_tesselation", custom_tesselation);
 	}
 
 	// Part of the cgv::base::base interface, should be implemented to respond to write
@@ -341,7 +343,7 @@ public:
 		//           and the one built into the cgv::render::context.
 
 		// < Your code here >
-
+		add_member_control(this, "use quad tesselation", custom_tesselation);
 		// [END] Task 0.1
 		//*****************************************************************************/
 	}
@@ -492,6 +494,10 @@ public:
 		// Task 0.1: If enabled, render the quad with custom tesselation
 		//           instead of using tesselate_unit_square(). You can invoke
 		//           the method draw_my_unit_square() for this.
+		if (custom_tesselation) {
+			draw_my_unit_square(ctx);
+		}
+		else
 			ctx.tesselate_unit_square();
 
 		//*********************************************************************/
@@ -504,9 +510,17 @@ public:
 		// Task 0.1: If enabled, render the quad with custom tesselation
 		//           instead of using tesselate_unit_square(). Again, you
 		//           can invoke the method draw_my_unit_square() for this.
-			if (draw_backside)
-				ctx.tesselate_unit_square();
 
+		if (draw_backside){
+			if (custom_tesselation)
+			{
+				draw_my_unit_square(ctx);
+			}
+
+			else
+				ctx.tesselate_unit_square();
+		}
+	
 		//*****************************************************************/
 		glPopAttrib();
 		ctx.pop_modelview_matrix();
@@ -541,9 +555,7 @@ public:
 };
 
 // Create an instance of the demo class at plugin load and register it with the framework
-cgv::base::object_registration<cgv_demo> cgv_demo_registration(
-	"cgv_demo" // <-- some arbitrary registration event tag that can be useful for advanced debugging
-);
+cgv::base::object_registration<cgv_demo> cgv_demo_registration("");
 
 // The following could be used to register the class with the framework but NOT create it
 // upon plugin load. Instead, the user can create an instance from the application menu.

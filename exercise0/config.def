@@ -14,6 +14,9 @@ type(cgv_demo):draw_backside=true
 /// Task 0.1: Set the custom tesselation of the quad to be used initially by cgv_demo via
 ///           your reflected property.
 
+type(cgv_demo):custom_tesselation=false
 
 
 /// Task 0.2: Set appropriate values for your drawable that renders the cube fractal.
+
+type(cubes_drawable):recursion_depth=1
