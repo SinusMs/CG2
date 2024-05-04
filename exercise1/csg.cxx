@@ -31,6 +31,16 @@ public:
 		// Task 1.1b: You can outsource logic here that evaluates the operator function
 		//            and reports the index of the relevant child in selected_i
 
+		value = std::numeric_limits<double>::infinity();
+		for (unsigned i = 0; i < cgv::base::group::get_nr_children(); i++) {
+			const implicit_base<T>* child = get_implicit_child(i);
+			T current_value = (*child).evaluate(p);
+			if (current_value < value) {
+				value = current_value;
+				selected_i = i;
+			}
+		}
+
 		return value;
 	}
 
@@ -39,8 +49,8 @@ public:
 		double f_p = std::numeric_limits<double>::infinity();
 
 		// Task 1.1b: Evaluate the union operator at p.
-
-		return f_p;
+		unsigned i;
+		return eval_and_get_index(p, i);
 	}
 
 	vec_type evaluate_gradient(const pnt_type& p) const
@@ -48,6 +58,9 @@ public:
 		vec_type grad_f_p(0, 0, 0);
 
 		// Task 1.1b: Return the gradient of the union operator at p
+		unsigned i;
+		eval_and_get_index(p, i);
+		grad_f_p = (*get_implicit_child(i)).evaluate_gradient(p);
 
 		return grad_f_p;
 	}
@@ -69,6 +82,15 @@ public:
 
 		// Task 1.1b: You can outsource logic here that evaluates the operator function
 		//            and reports the index of the relevant child in selected_i
+		value = -std::numeric_limits<double>::infinity();
+		for (unsigned i = 0; i < cgv::base::group::get_nr_children(); i++) {
+			const implicit_base<T>* child = get_implicit_child(i);
+			T current_value = (*child).evaluate(p);
+			if (current_value > value) {
+				value = current_value;
+				selected_i = i;
+			}
+		}
 
 		return value;
 	}
@@ -78,8 +100,8 @@ public:
 		double f_p = std::numeric_limits<double>::infinity();
 
 		// Task 1.1b: Evaluate the intersection operator at p.
-
-		return f_p;
+		unsigned i;
+		return eval_and_get_index(p, i);
 	}
 
 	vec_type evaluate_gradient(const pnt_type& p) const
@@ -87,6 +109,9 @@ public:
 		vec_type grad_f_p(0, 0, 0);
 
 		// Task 1.1b: Return the gradient of the intersection operator at p
+		unsigned i;
+		eval_and_get_index(p, i);
+		grad_f_p = (*get_implicit_child(i)).evaluate_gradient(p);
 
 		return grad_f_p;
 	}
@@ -108,6 +133,16 @@ public:
 
 		// Task 1.1b: You can outsource logic here that evaluates the operator function
 		//            and reports the index of the relevant child in selected_i
+		value = -std::numeric_limits<double>::infinity();
+		T first_value = (*get_implicit_child(0)).evaluate(p);
+		for (unsigned i = 1; i < cgv::base::group::get_nr_children(); i++) {
+			const implicit_base<T>* child = get_implicit_child(i);
+			T current_value = (*child).evaluate(p);
+			if (std::max(first_value, -current_value) > value) {
+				value = std::max(first_value, -current_value);
+				selected_i = first_value > -current_value ? 0 : i;
+			}
+		}
 
 		return value;
 	}
@@ -117,8 +152,8 @@ public:
 		double f_p = std::numeric_limits<double>::infinity();
 
 		// Task 1.1b: Evaluate the difference operator at p.
-
-		return f_p;
+		unsigned i;
+		return eval_and_get_index(p, i);
 	}
 
 	vec_type evaluate_gradient(const pnt_type& p) const
@@ -126,6 +161,9 @@ public:
 		vec_type grad_f_p(0, 0, 0);
 
 		// Task 1.1b: Return the gradient of the difference operator at p
+		unsigned i;
+		eval_and_get_index(p, i);
+		grad_f_p = (*get_implicit_child(i)).evaluate_gradient(p);
 
 		return grad_f_p;
 	}
