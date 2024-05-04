@@ -19,7 +19,7 @@ struct sphere : public implicit_primitive<T>
 
 		// Task 1.1a: Implement an algebraic function of p that evaluates to 0 on the
 		//            unit sphere.
-
+		f_p = (p.x() * p.x()) + (p.y() * p.y()) + (p.z() * p.z()) - 1;
 		return f_p;
 	}
 
@@ -29,7 +29,7 @@ struct sphere : public implicit_primitive<T>
 		vec_type grad_f_p(0, 0, 0);
 
 		// Task 1.1a: Return the gradient of the function at p.
-
+		grad_f_p = vec_type(2 * p.x(), 2 * p.y(), 2 * p.z());
 		return grad_f_p;
 	}
 
