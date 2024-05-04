@@ -1,0 +1,17 @@
+difference(
+	intersection(
+		box,
+		scale[sx=1.2;sy=1.2;sz=1.2](sphere)
+	),
+	union(
+		scale[sx=0.5;sy=0.5;sz=0.5](
+			rotate[a=0](cylinder)
+		),
+		scale[sx=0.5;sy=0.5;sz=0.5](
+			rotate[](cylinder)
+		),
+		scale[sx=0.5;sy=0.5;sz=0.5](
+			rotate[nx=0;ny=1](cylinder)
+		),
+	)
+)
