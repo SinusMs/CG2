@@ -7,9 +7,10 @@
   },
   "ExpandedNodes": [
     "",
+    "\\cmake-build",
     "\\cmake-build\\exercise0",
     "\\exercise0"
   ],
-  "SelectedNode": "\\exercise0\\config.def",
+  "SelectedNode": "\\cmake-build\\CG2.sln",
   "PreviewInSolutionExplorer": true
 }
