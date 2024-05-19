@@ -555,7 +555,7 @@ public:
 };
 
 // Create an instance of the demo class at plugin load and register it with the framework
-cgv::base::object_registration<cgv_demo> cgv_demo_registration("");
+//cgv::base::object_registration<cgv_demo> cgv_demo_registration("");
 
 // The following could be used to register the class with the framework but NOT create it
 // upon plugin load. Instead, the user can create an instance from the application menu.
@@ -568,3 +568,4 @@ cgv::base::object_registration<cgv_demo> cgv_demo_registration("");
 		true            // whether the class is supposed to be a singleton
 	);
 */
+

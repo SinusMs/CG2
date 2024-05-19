@@ -28,6 +28,8 @@ struct box : public implicit_primitive<T>
 		// Task 1.1a: Implement a function of p that evaluates to 0 on the unit cube.
 		//            You may use any suitable distance metric.
 
+		f_p =  std::max(std::max(std::abs(p(0)), std::abs(p(1))),std::abs(p(2))) -1;
+
 		return f_p;
 	}
 
@@ -37,6 +39,7 @@ struct box : public implicit_primitive<T>
 		vec_type grad_f_p(0, 0, 0);
 
 		// Task 1.1a: Return the gradient of the function at p.
+		grad_f_p = vec_type();
 
 		return grad_f_p;
 	}
