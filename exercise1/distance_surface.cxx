@@ -23,10 +23,13 @@ typename distance_surface<T>::vec_type distance_surface<T>::get_edge_distance_ve
 	//return p - d_e(p), which is the smallest distance from edge e to some point p, where p_e(p) is the
 	//projection of p onto e.
 
-	vec_type edge = edge_vector[i];
+//	vec_type edge = edge_vector[i];
+	pnt_type p_rel = p - (knot_vector<T>::points)[skeleton<T>::edges[i].first];
+	vec_type edge = (knot_vector<T>::points)[skeleton<T>::edges[i].second] - 
+		(knot_vector<T>::points)[skeleton<T>::edges[i].first];
 	//project  p onto edge
-	vec_type pe = ((p(0) * edge(0)+ p(1) * edge(1) + p(2) * edge(2)) / edge.sqr_length()) * edge;
-	v = p - pe;
+	vec_type pe = ((p_rel(0) * edge(0)+ p_rel(1) * edge(1) + p_rel(2) * edge(2)) / edge.sqr_length()) * edge;
+	v = p_rel - pe;
  
 	return v;
 }
@@ -42,12 +45,13 @@ double distance_surface<T>::get_min_distance_vector (const pnt_type &p, vec_type
 
 	for (unsigned int edge_i = 0; edge_i < edge_vector.size(); edge_i++) {
 		vec_type vec = get_edge_distance_vector(edge_i, p);
-		double dist = std::sqrt(vec.sqr_length());
+		double dist = vec.sqr_length();
 		if (dist < min_dist) {
 			min_dist = dist;
 			v = vec;
 		}
 	}
+	min_dist = std::sqrt(min_dist);
 
 	return min_dist;
 }
@@ -67,7 +71,7 @@ T distance_surface<T>::evaluate(const pnt_type& p) const
 template <typename T>
 typename distance_surface<T>::vec_type distance_surface<T>::evaluate_gradient(const pnt_type& p) const
 {
-	vec_type grad_f_p(0, 0, 0);
+	vec_type grad_f_p(1, 0, 0);
 
 	// Task 1.2: Return the gradient of the distance surface function at p.
 
