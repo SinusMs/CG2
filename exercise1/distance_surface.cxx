@@ -18,8 +18,9 @@ template <typename T>
 typename distance_surface<T>::vec_type distance_surface<T>::get_edge_distance_vector(size_t i, const pnt_type &p) const
 {
 	vec_type v;
-
 	// Task 1.2: Compute the distance vector from edge i to p.
+
+
 
 	return v;
 }

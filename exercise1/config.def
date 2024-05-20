@@ -1,9 +1,9 @@
-
 // The UI theme: light, mid, dark, darkest, legacy
 type(fltk_viewer_window):theme=dark
 
 // Make specular highlights more pronounced
-type(implicit_surface):material_roughness=.0625
+type(implicit_surface):material_roughness=0.625
 
 // Load the simple sphere after startup
-type(scene):file_name="./data/Implicits/sphere.isd"
+// type(scene):file_name="./data/Implicits/box.isd"
+type(scene):file_name="./exercise1/task11.isd"
