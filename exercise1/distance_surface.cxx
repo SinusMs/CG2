@@ -25,7 +25,15 @@ typename distance_surface<T>::vec_type distance_surface<T>::get_edge_distance_ve
 		(knot_vector<T>::points)[skeleton<T>::edges[i].first];
 
 	vec_type p_proj = ((p_rel.x() * edge.x() + p_rel.y() * edge.y() + p_rel.z() * edge.z()) / edge.sqr_length()) * edge;
-	v = p_rel - p_proj;
+
+	if (p_proj.sqr_length() > edge.sqr_length())
+		v = p - (knot_vector<T>::points)[skeleton<T>::edges[i].second];
+
+	else if ((p_proj - edge).sqr_length() > edge.sqr_length())
+		v = p_rel;
+
+	else
+		v = p_rel - p_proj;
 
 	return v;
 }
