@@ -20,17 +20,34 @@ typename distance_surface<T>::vec_type distance_surface<T>::get_edge_distance_ve
 	vec_type v;
 
 	// Task 1.2: Compute the distance vector from edge i to p.
+	//return p - d_e(p), which is the smallest distance from edge e to some point p, where p_e(p) is the
+	//projection of p onto e.
 
+	vec_type edge = edge_vector[i];
+	//project  p onto edge
+	vec_type pe = ((p(0) * edge(0)+ p(1) * edge(1) + p(2) * edge(2)) / edge.sqr_length()) * edge;
+	v = p - pe;
+ 
 	return v;
 }
 
 template <typename T>
 double distance_surface<T>::get_min_distance_vector (const pnt_type &p, vec_type& v) const
-{
+	{
 	double min_dist;
 
 	// Task 1.2: Compute the minimum distance from the skeleton to p, and report the
 	//           corresponding distance vector in v.
+	min_dist = std::numeric_limits<double>::infinity();
+
+	for (unsigned int edge_i = 0; edge_i < edge_vector.size(); edge_i++) {
+		vec_type vec = get_edge_distance_vector(edge_i, p);
+		double dist = std::sqrt(vec.sqr_length());
+		if (dist < min_dist) {
+			min_dist = dist;
+			v = vec;
+		}
+	}
 
 	return min_dist;
 }
@@ -41,6 +58,8 @@ T distance_surface<T>::evaluate(const pnt_type& p) const
 	double f_p = std::numeric_limits<double>::infinity();
 
 	// Task 1.2: Evaluate the distance surface function at p.
+	vec_type v = vec_type(0, 0, 0);
+	f_p = get_min_distance_vector(p, v) - r;
 
 	return f_p;
 }
