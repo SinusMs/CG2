@@ -8,12 +8,10 @@
   "ExpandedNodes": [
     "",
     "\\cmake-build",
-    "\\cmake-build\\cgv",
-    "\\cmake-build\\exercise0",
-    "\\cmake-build\\exercise1",
+    "\\data",
     "\\data\\Implicits",
     "\\exercise1"
   ],
-  "SelectedNode": "\\cmake-build\\cgv\\cgv.sln",
+  "SelectedNode": "\\cmake-build\\CG2.sln",
   "PreviewInSolutionExplorer": true
 }

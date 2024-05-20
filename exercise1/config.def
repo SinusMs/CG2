@@ -6,4 +6,4 @@ type(fltk_viewer_window):theme=dark
 type(implicit_surface):material_roughness=.0625
 
 // Load the simple sphere after startup
-type(scene):file_name="./exercise1/task11.isd"
+type(scene):file_name="./data/Implicits/distance_surface.isd"
