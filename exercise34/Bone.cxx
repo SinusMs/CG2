@@ -28,11 +28,12 @@ Bone::~Bone()
 
 void Bone::calculate_matrices()
 {
-	orientationTransformGlobalToLocal.identity();
+	orientationSystemTransformLocalToGlobal.identity();
 	std::for_each(orientation.begin(), orientation.end(), [&](AtomicTransform* t) {
-		orientationTransformGlobalToLocal = orientationTransformGlobalToLocal * t->calculate_matrix();
+        orientationSystemTransformLocalToGlobal = orientationSystemTransformLocalToGlobal * t->calculate_matrix();
 	});
-	orientationTransformLocalToGlobal = cgv::math::inv(orientationTransformGlobalToLocal);
+    orientationModelTransformLocalToGlobal = cgv::math::inv(orientationSystemTransformLocalToGlobal);
+    // ^ same thing:  orientationSystemTransformGlobalToLocal = cgv::math::inv(orientationModelTransformGlobalToLocal);
 
 	////
 	// Task 3.1: Implement matrix calculation
@@ -130,11 +131,11 @@ std::shared_ptr<AtomicTransform> Bone::get_dof(int dofIndex) const { return dofs
 
 const Mat4& Bone::get_binding_pose_matrix() const
 {
-	return transformLocalToGlobal;
+	return systemTransformGlobalToLocal;
 }
 
-const Mat4& Bone::get_translation_transform_current_joint_to_next() const { return translationTransformCurrentJointToNext; }
-const Mat4& Bone::get_orientation_transform_prev_joint_to_current() const { return orientationTransformPrevJointToCurrent; }
+const Mat4& Bone::get_translation_transform_current_joint_to_next() const { return translationModelTransformCurJointToNext; }
+const Mat4& Bone::get_orientation_transform_prev_joint_to_current() const { return orientationModelTransformPrevJointToCur; }
 
 Vec4 Bone::get_bone_local_root_position() const { return Vec4(0, 0, 0, 1); }
-Vec4 Bone::get_bone_local_tip_position() const { return translationTransformCurrentJointToNext * Vec4(0, 0, 0, 1); }
+Vec4 Bone::get_bone_local_tip_position() const { return translationModelTransformCurJointToNext * Vec4(0, 0, 0, 1); }
