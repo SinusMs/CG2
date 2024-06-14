@@ -7,11 +7,10 @@
   },
   "ExpandedNodes": [
     "",
-    "\\cmake-build",
     "\\data",
     "\\data\\Implicits",
-    "\\exercise1"
+    "\\exercise34"
   ],
-  "SelectedNode": "\\cmake-build\\CG2.sln",
+  "SelectedNode": "\\exercise34\\Bone.cxx",
   "PreviewInSolutionExplorer": true
 }

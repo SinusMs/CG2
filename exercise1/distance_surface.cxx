@@ -23,9 +23,17 @@ typename distance_surface<T>::vec_type distance_surface<T>::get_edge_distance_ve
 	pnt_type p_rel = p - (knot_vector<T>::points)[skeleton<T>::edges[i].first];
 	vec_type edge = (knot_vector<T>::points)[skeleton<T>::edges[i].second] - (knot_vector<T>::points)[skeleton<T>::edges[i].first];
 	
-	vec_type p_proj = ((p_rel.x() * edge.x() + p_rel.y() * edge.y() + p_rel.z() * edge.z()) / (edge.x()*edge.x()+ edge.y() * edge.y() + edge.z() * edge.z())) * edge;
-	v = p_rel - p_proj;
-
+	vec_type p_proj = ((p_rel.x() * edge.x() + p_rel.y() * edge.y() + p_rel.z() * edge.z()) / edge.sqr_length()) * edge;
+	if (p_proj.sqr_length() > edge.sqr_length()) {
+		v = p - (knot_vector<T>::points)[skeleton<T>::edges[i].second];
+	}
+	else if ((p_proj - edge).sqr_length() > edge.sqr_length()) {
+		v = p_rel;
+	}
+	else v = p_rel - p_proj;
+	
+	// if (p_proj.sqr_length() < 0 || p_proj.sqr_length() > edge.sqr_length()) v = (0, 0, 0);
+	
 	return v;
 }
 
@@ -43,8 +51,9 @@ double distance_surface<T>::get_min_distance_vector (const pnt_type &p, vec_type
 			v = v_new;
 			min_dist = length;
 		}
-
 	}
+	min_dist = std::sqrt(min_dist);
+
 	// Task 1.2: Compute the minimum distance from the skeleton to p, and report the
 	//           corresponding distance vector in v.
 	return min_dist;
