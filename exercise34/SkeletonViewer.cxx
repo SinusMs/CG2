@@ -38,6 +38,21 @@ void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& parent_local_
 {
 	////
 	// Task 3.2, 4.3: Visualize the skeleton
+
+	std::cout << "level: " << level << std::endl;
+	cgv::vec4 base = global_to_parent_local * node->get_bone_local_root_position();
+	cgv::vec4 tip = global_to_parent_local * node->get_bone_local_tip_position();
+	glBegin(GL_LINES);
+	glColor3f(1,0,0);
+	glVertex3f(base[0],base[1],base[2]);
+
+	glVertex3f(tip[0],tip[1],tip[2]);
+
+	glEnd();
+
+	for (int i = 0; i < node->childCount(); i++) {
+		draw_skeleton_subtree(node->child_at(i), node->get_translation_transform_current_joint_to_next()*translate(base), ctx, level + 1);
+	}
 }
 
 void SkeletonViewer::timer_event(double, double dt)
