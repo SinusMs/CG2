@@ -16,7 +16,7 @@ Install Directory=/usr/local
 Runtime=Host System
 
 [Launch]
-Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2,Launch Configuration 3
+Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2,Launch Configuration 3,Launch Configuration 4,Launch Configuration 5
 
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
@@ -65,6 +65,31 @@ Type=Script Application
 [Launch][Launch Configuration 3][Data]
 Configured from ProjectItem=CG2,solution,run_exercise1.sh
 Executable=file:///home/frederik/source/repos/marcg2/CG2/solution/run_exercise1.sh
+Interpreter=bash
+Output Filtering Mode=2
+Run current file=false
+
+[Launch][Launch Configuration 4]
+Configured Launch Modes=execute
+Configured Launchers=scriptAppLauncher
+Name=run_exercise34.sh
+Type=Script Application
+
+[Launch][Launch Configuration 4][Data]
+Configured from ProjectItem=CG2,solution,run_exercise34.sh
+Executable=file:///home/frederik/source/repos/marcg2/CG2/solution/run_exercise34.sh
+Interpreter=bash
+Output Filtering Mode=2
+Run current file=false
+
+[Launch][Launch Configuration 5]
+Configured Launch Modes=execute
+Configured Launchers=scriptAppLauncher
+Name=run_task34_animation.sh
+Type=Script Application
+
+[Launch][Launch Configuration 5][Data]
+Executable=file:///home/frederik/source/repos/marcg2/CG2/build/run_task34_animation.sh
 Interpreter=bash
 Output Filtering Mode=2
 Run current file=false

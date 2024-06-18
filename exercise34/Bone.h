@@ -16,7 +16,7 @@ public:
 	Bone();
 	~Bone();
 
-	//Adds a new degree of freedom to the bone. The bone maintains separate groups of
+	//Adds ••••••a new degree of freedom to the bone. The bone maintains separate groups of
 	//translation transforms and other transforms. All translation transforms go first 
 	//in the dof list, followed by all other transforms. Every new transform is added
 	//to the beginning of the respective group.
