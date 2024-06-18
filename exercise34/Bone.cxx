@@ -36,7 +36,10 @@ void Bone::calculate_matrices()
 
 	////
 	// Task 3.1: Implement matrix calculation
-
+	translationTransformCurrentJointToNext = translate(
+		this->direction_in_world_space[0]*this->get_length(),
+		this->direction_in_world_space[1]*this->get_length(),
+		this->direction_in_world_space[2]*this->get_length());
 
 
 	////
@@ -57,8 +60,8 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 {
 	////
 	// Task 3.1: Implement matrix calculation
-
 	Mat4 t;
+
 	return t;
 }
 
