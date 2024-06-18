@@ -36,10 +36,7 @@ void Bone::calculate_matrices()
 
 	////
 	// Task 3.1: Implement matrix calculation
-	orientationTransformPrevJointToCurrent = calculate_transform_prev_to_current_without_dofs();
-	 for (int i = 0; i < childCount(); i++) {
-		 child_at(i)->calculate_matrices();
-	}
+	translationTransformCurrentJointToNext = translate(get_direction_in_world_space()*get_length());
 
 	////
 	// Task 4.6: Implement matrix calculation (skinning)
