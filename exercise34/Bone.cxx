@@ -37,6 +37,10 @@ void Bone::calculate_matrices()
 	////
 	// Task 3.1: Implement matrix calculation
 	translationTransformCurrentJointToNext = translate(get_direction_in_world_space()*get_length());
+	orientationTransformPrevJointToCurrent = calculate_transform_prev_to_current_without_dofs();
+	for (int i = 0; i < childCount(); i++) {
+		child_at(i)->calculate_matrices();
+	}
 
 	////
 	// Task 4.6: Implement matrix calculation (skinning)
@@ -63,12 +67,12 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 	float c = cgv::math::dot(parent_vec, get_direction_in_world_space());
 
 	Mat4 vx;
-	vx(0,1) -= v[2];
-	vx(0,2) += v[1];
-	vx(1,0) += v[2];
-	vx(1,2) -= v[0];
-	vx(2,0) -= v[1];
-	vx(2,1) += v[0];
+	vx(0,1) = -v[2];
+	vx(0,2) = v[1];
+	vx(1,0) = v[2];
+	vx(1,2) = -v[0];
+	vx(2,0) = -v[1];
+	vx(2,1) = v[0];
 
 	Mat4 t;
 	t.identity();

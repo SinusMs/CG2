@@ -38,14 +38,14 @@ void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& global_to_par
 {
 	////
 	// Task 3.2, 4.3: Visualize the skeleton
-	cgv::vec4 root = node->get_bone_local_root_position() * global_to_parent_local;
-	cgv::vec4 tip = node->get_bone_local_tip_position() * global_to_parent_local;
+	cgv::vec4 root = global_to_parent_local * node->get_bone_local_root_position();
+	cgv::vec4 tip = global_to_parent_local * node->get_bone_local_tip_position();
 
 	glBegin(GL_LINES);
 	glColor3f(1,1,1);
 	glVertex3f(root[0], root[1], root[2]);
 	glVertex3f(tip[0], tip[1], tip[2]);
-	glEnd;
+	glEnd();
 	for (int i = 0; i < node->childCount(); i++){
 		draw_skeleton_subtree(node->child_at(i), node->get_translation_transform_current_joint_to_next() * translate(root), ctx, level+1);
 	}
