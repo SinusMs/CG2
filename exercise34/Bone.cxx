@@ -28,47 +28,32 @@ Bone::~Bone()
 
 void Bone::calculate_matrices()
 {
-	orientationSystemTransformLocalToGlobal.identity();
+	orientationTransformGlobalToLocal.identity();
 	std::for_each(orientation.begin(), orientation.end(), [&](AtomicTransform* t) {
-        orientationSystemTransformLocalToGlobal = orientationSystemTransformLocalToGlobal * t->calculate_matrix();
+		orientationTransformGlobalToLocal = orientationTransformGlobalToLocal * t->calculate_matrix();
 	});
-    orientationModelTransformLocalToGlobal = cgv::math::inv(orientationSystemTransformLocalToGlobal);
-    // ^ same thing:  orientationSystemTransformGlobalToLocal = cgv::math::inv(orientationModelTransformGlobalToLocal);
+	orientationTransformLocalToGlobal = cgv::math::inv(orientationTransformGlobalToLocal);
 
 	////
 	// Task 3.1: Implement matrix calculation
-	translationTransformCurrentJointToNext = translate(
-		cgv::math::fvec<float, 3>(1, 0, 0) * this->length);
-		//this->direction_in_world_space*this->get_length());
-	Vec3 zComp = Vec3(this->direction_in_world_space[0], direction_in_world_space[1], 0);
-	zComp = zComp.normalize() * zComp;
+	translationTransformCurrentJointToNext = translate(get_direction_in_world_space() * get_length());
 
-	Vec3 yComp = Vec3(this->direction_in_world_space[0], 0, this->direction_in_world_space[2]);
-	yComp = yComp.normalize() * yComp;
-
-	orientationTransformPrevJointToCurrent = rotate(cgv::math::fvec<float, 3>(0, 1, 0), cgv::math::dot(yComp, Vec3(1, 0, 0)))
-		* rotate(Vec3(0,0,1),dot(zComp, Vec3(1, 0, 0)));
-
+	if (get_parent() != NULL) {
+		auto parent = get_parent()->get_direction_in_world_space();
+		auto current = get_direction_in_world_space();
+		float angle = 0;
+		if (cgv::math::sqr_length(current) != 0 && cgv::math::sqr_length(parent) != 0) {
+			angle = cgv::math::dot(parent, current) / (cgv::math::sqr_length(parent) * cgv::math::sqr_length(current));
+		}
+		orientationTransformPrevJointToCurrent = rotate(cgv::math::cross(parent, current), angle);
+	}
+	else orientationTransformPrevJointToCurrent.identity();
 /*
-	cgv::math::fvec<float, 3> parent_vec = get_parent()->get_direction_in_world_space();
-
-	cgv::math::fvec<float, 3> v = cgv::math::cross(parent_vec, get_direction_in_world_space());
-	float s = cgv::math::sqr_length(v);
-	float c = cgv::math::dot(parent_vec, get_direction_in_world_space());
-
-	Mat4 vx;
-	vx(0,1) -= v[2];
-	vx(0,2) += v[1];
-	vx(1,0) += v[2];
-	vx(1,2) -= v[0];
-	vx(2,0) -= v[1];
-	vx(2,1) += v[0];
-
-	Mat4 t;
-	t.identity();
-	t += vx + cgv::math::sqr(vx) * 1 / (1 + c);
-
+	for (int i = 0; i < childCount(); i++) {
+		child_at(i)->calculate_matrices();
+	}
 */
+
 	////
 	// Task 4.6: Implement matrix calculation (skinning)
 
@@ -80,6 +65,14 @@ Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
 	// Task 3.1: Implement matrix calculation
 
 	Mat4 t;
+	if (get_parent() == NULL) {
+		t.identity();
+		return t;
+	}
+	t = calculate_transform_prev_to_current_without_dofs();
+	for (int i = 0; i < dof_count(); i++) {
+		t *= orientationTransformPrevJointToCurrent * get_dof(i)->calculate_matrix() * get_parent()->get_translation_transform_current_joint_to_next();
+	}
 	return t;
 }
 
@@ -87,8 +80,13 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 {
 	////
 	// Task 3.1: Implement matrix calculation
-	Mat4 t;
 
+	Mat4 t;
+	if (get_parent() == NULL) {
+		t.identity();
+		return t;
+	}
+	t = orientationTransformPrevJointToCurrent * get_parent()->get_translation_transform_current_joint_to_next();
 	return t;
 }
 
@@ -133,11 +131,11 @@ std::shared_ptr<AtomicTransform> Bone::get_dof(int dofIndex) const { return dofs
 
 const Mat4& Bone::get_binding_pose_matrix() const
 {
-	return systemTransformGlobalToLocal;
+	return transformLocalToGlobal;
 }
 
-const Mat4& Bone::get_translation_transform_current_joint_to_next() const { return translationModelTransformCurJointToNext; }
-const Mat4& Bone::get_orientation_transform_prev_joint_to_current() const { return orientationModelTransformPrevJointToCur; }
+const Mat4& Bone::get_translation_transform_current_joint_to_next() const { return translationTransformCurrentJointToNext; }
+const Mat4& Bone::get_orientation_transform_prev_joint_to_current() const { return orientationTransformPrevJointToCurrent; }
 
 Vec4 Bone::get_bone_local_root_position() const { return Vec4(0, 0, 0, 1); }
-Vec4 Bone::get_bone_local_tip_position() const { return translationModelTransformCurJointToNext * Vec4(0, 0, 0, 1); }
+Vec4 Bone::get_bone_local_tip_position() const { return translationTransformCurrentJointToNext * Vec4(0, 0, 0, 1); }

@@ -9,7 +9,6 @@
 #include <deque>
 #include <memory>
 
-
 // Represents a bone in a hierarchical skeleton
 class Bone
 {	
@@ -109,50 +108,17 @@ private:
 	std::vector<Bone*> children; //child bones
 	Bone* parent; //parent bone	
 
-
-	// ------------------------------
-	// Calculated attributes
-
-    // Model transformation that rotates to the current bone from the previous bone (in the previous bone's coordinate system); Task 3.1
-	Mat4 orientationModelTransformPrevJointToCur;
-    // Model transformation that translates to the next bone from the current bone (in the current bone's coordinate system); Task 3.1
-    Mat4 translationModelTransformCurJointToNext;
-
-    // System transformation that rotates bone-local coordinates into the global system, i.e. yields globally oriented coordinates from bone-local coordinates.
-    // Available from the beginning.
-    Mat4 orientationSystemTransformLocalToGlobal;
-    // Model transformation that rotates onto the current bone from the global orientation (in global coordinates).
-    // Automatically tracks the corresponding system transformation. Available from the beginning.
-    Mat4 &orientationModelTransformGlobalToLocal = orientationSystemTransformLocalToGlobal;
-
-    // System transformation that rotates global coordinates into the bone-local system, i.e. yields locally oriented coordinates from global coordinates.
-    // Available from the beginning.
-    Mat4 orientationSystemTransformGlobalToLocal;
-    // Model transformation that rotates onto the global orientation from the current bone (in the current bone's coordinate system).
-    // Automatically tracks the corresponding system transformation. Available from the beginning.
-    Mat4 &orientationModelTransformLocalToGlobal = orientationSystemTransformGlobalToLocal;
-
-
-    // ------------------------------
-    // For skinning
-
-    // System transformation that translates bone-local coordinates into the global system, i.e. yields the globally translated coordinates from bone-local coordinates; Task 4.6
-    Mat4 translationSystemTransformLocalToGlobal;
-    // Model transformation that translates to the current bone from the global system (in global coordinates); Task 4.6
-    // Automatically tracks the corresponding system transformation.
-    Mat4 &translationModelTransformGlobalToLocal = translationSystemTransformLocalToGlobal;
-
-    // System transformation that transforms (orientation and translation) bone-local coordinates into the global system, i.e. yields the globally transformed coordinates from bone-local coordinates; Task 4.6
-    Mat4 systemTransformLocalToGlobal;
-    // Model transformation that transforms (orientation and translation) onto the current bone from the global system (in global coordinates); Task 4.6
-    // Automatically tracks the corresponding system transformation.
-    Mat4 &modelTransformGlobalToLocal = systemTransformLocalToGlobal;
-
-    // System transformation that transforms (orientation and translation) global coordinates into the bone-local system, i.e. yields local coordinates from global coordinates; Task 4.6
-    Mat4 systemTransformGlobalToLocal;
-    // Model transformation that transforms (orientation and translation) onto the global system from the current bone (in coordinates relative to the current bone); Task 4.6
-    // Automatically tracks the corresponding system transformation.
-    Mat4 &modelTransformLocalToGlobal = systemTransformGlobalToLocal;
+	//Calculated attributes
+	//Transform directions are specified for model transforms (system transforms are in the opposite direction)
+	Mat4 orientationTransformPrevJointToCurrent; //Rotation matrix that transforms from the previous bone to the current bone (in the previous bone's coordinate system); Task 3.1
+	Mat4 translationTransformCurrentJointToNext; //Translation matrix that transforms from the current bone to the next bone (in the current bone's coordinate system); Task 3.1
+	Mat4 orientationTransformGlobalToLocal; //Rotation matrix that transforms from the global coordinate system to the current bone's local system. Available from the beginning.
+	Mat4 orientationTransformLocalToGlobal; //Rotation matrix that transforms from the current bone's local system to the global coordinate system. Available from the beginning.
+	//for skinning:
+	Mat4 translationTransformGlobalToLocal; //Translation matrix that transforms from the global coordinate system to the bone's local system. Task 4.6
+	Mat4 transformGlobalToLocal; //Combined rotation and translation that transforms from the global coordinate system to the bone's local system. Task 4.6
+	Mat4 transformLocalToGlobal;//Combined rotation and translation that transforms from the bone's local coordinate system to the global system. Task 4.6
 
 	int translationTransforms; //The number of translation transforms that have been added as dof
 };
+
