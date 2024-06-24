@@ -36,9 +36,21 @@ void Bone::calculate_matrices()
 
 	////
 	// Task 3.1: Implement matrix calculation
+	// orientationTransformPrevJointToCurrent
+	translationTransformCurrentJointToNext = translate(get_direction_in_world_space() * get_length());
 
+	orientationTransformPrevJointToCurrent.identity();
+	
 
-
+	// translationTransformCurrentJointToNext
+	
+	for (size_t i = 0; i < childCount(); i++)
+	{
+		// std::cout << get_length() << "\n";
+		child_at(i)->calculate_matrices();
+		
+	}
+	
 	////
 	// Task 4.6: Implement matrix calculation (skinning)
 
@@ -50,6 +62,12 @@ Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
 	// Task 3.1: Implement matrix calculation
 
 	Mat4 t;
+	t = calculate_transform_prev_to_current_without_dofs();
+	for (int i = 0; i < dof_count(); i++)
+	{
+		t *= get_dof(i)->calculate_matrix();
+	}
+
 	return t;
 }
 
@@ -57,8 +75,9 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 {
 	////
 	// Task 3.1: Implement matrix calculation
-
+	
 	Mat4 t;
+	t = orientationTransformPrevJointToCurrent * get_parent()->get_translation_transform_current_joint_to_next();
 	return t;
 }
 

@@ -12,6 +12,7 @@
 #include <cgv/base/find_action.h>
 #include <cgv/media/illum/surface_material.h>
 
+
 #include "math_helper.h"
 
 using namespace cgv::utils;
@@ -38,6 +39,31 @@ void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& global_to_par
 {
 	////
 	// Task 3.2, 4.3: Visualize the skeleton
+	
+	cgv::dvec4 root = global_to_parent_local * node->get_bone_local_root_position();
+	cgv::dvec4 tip = global_to_parent_local * node->get_bone_local_tip_position();
+	
+	glBegin(GL_LINES);
+	glColor3f(level*10.0/255.0, level * 10.0 / 255.0, level * 10.0 / 255.0);
+	glVertex3f(root[0], root[1], root[2]);
+	glVertex3f(tip[0], tip[1], tip[2]);
+
+	glEnd(); 
+
+	cgv::vec4 rootgl = cgv::math::inv(global_to_parent_local) * node->get_bone_local_root_position();
+	cgv::vec4 tipgl = cgv::math::inv(global_to_parent_local) * node->get_bone_local_tip_position();
+
+	double length = (cgv::dvec3(tip[0], tip[1], tip[2]) - cgv::dvec3(root[0], root[1], root[2])).length();
+	std::cout << "try to draw: " << node->get_name() << " with length: " << node->get_length() << " root to tip is: " << length << std::endl;
+	// ctx.tesselate_arrow(cgv::dvec3(root[0], root[1], root[2]), cgv::dvec3(tip[0], tip[1], tip[2]), 0.1, 2.0, 0.3, 25, false);
+	ctx.tesselate_arrow(cgv::dvec3(root[0], root[1], root[2]), cgv::dvec3(tip[0], tip[1], tip[2]), 1, 2.0, 3, 25, true);
+	
+	//ctx.tesselate_arrow(cgv::dvec3(0.0, 0.0, 0.0), cgv::dvec3(5.1, 5.1, 5.1), 0.1, 2.0, 0.3, 25, false);
+	
+	for (int i = 0; i < node->childCount(); i++) {
+		draw_skeleton_subtree(node->child_at(i), node->get_translation_transform_current_joint_to_next() * translate(root), ctx, level + 1);
+	}
+	
 }
 
 void SkeletonViewer::timer_event(double, double dt)
