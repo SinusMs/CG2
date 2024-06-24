@@ -34,7 +34,8 @@ SkeletonViewer::SkeletonViewer(DataStore* data)
 }
 
 //draws a part of a skeleton, represented by the given root node
-void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& parent_local_to_global, context& ctx, int level)
+void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& parent_local_to_global, context& ctx, int level,
+	cgv::media::color<float> color = cgv::media::color<float>((float)238 / 255, (float)125 / 255, (float)68 / 255))
 {
 	////
 	// Task 3.2, 4.3: Visualize the skeleton
@@ -42,17 +43,20 @@ void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& parent_local_
 	cgv::vec4 root = parent_local_to_global * node->get_bone_local_root_position();
 	cgv::vec4 tip = parent_local_to_global * node->get_bone_local_tip_position();
 
-	glBegin(GL_LINES);
-	glColor3f(1, 1, 1);
-	glVertex3f(root[0], root[1], root[2]);
-	glVertex3f(tip[0], tip[1], tip[2]);
-	glEnd();
-	if (node->get_length() >= 1e-8)
-		ctx.set_color(cgv::rgba(1));
-		ctx.tesselate_arrow(root, tip);
-	std::cout << node->get_length() << std::endl;
+	if (!ctx.ref_default_shader_program().is_enabled())
+		ctx.ref_default_shader_program().enable(ctx);
+
+	if (node->get_length() >= 1e-8) {
+		ctx.set_color(color);
+		ctx.tesselate_arrow(root, tip, 0.05, 7 / node->get_length());
+
+		cgv::media::color<float, cgv::media::HLS> color_next(color);
+		color_next.H() = std::fmod(color_next.H() + 0.2f, 1.0f);
+		color_next.S() = std::fmod(color_next.S() - 0.05f, 1.0f);
+		color = color_next;
+	}
 	for (int i = 0; i < node->childCount(); i++) {
-		draw_skeleton_subtree(node->child_at(i), node->get_translation_transform_current_joint_to_next() * translate(root), ctx, level + 1);
+		draw_skeleton_subtree(node->child_at(i), node->get_translation_transform_current_joint_to_next() * translate(root), ctx, level + 1, color);
 	}
 }
 

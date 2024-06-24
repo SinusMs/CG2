@@ -50,7 +50,7 @@ private:
 	void load_animation();
 	void start_choose_base();
 
-	void draw_skeleton_subtree(Bone* node, const Mat4& parent_local_to_global, context& ctx, int level);
+	void draw_skeleton_subtree(Bone* node, const Mat4& parent_local_to_global, context& ctx, int level, cgv::media::color<float> color);
 
 	void dof_changed(double new_value);
 	void recursive_connect_signals(Bone* b);
