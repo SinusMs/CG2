@@ -36,6 +36,7 @@ void Bone::calculate_matrices()
 
 	////
 	// Task 3.1: Implement matrix calculation
+<<<<<<< HEAD
 	translationTransformCurrentJointToNext = translate(get_direction_in_world_space() * get_length());
 
 	if (get_parent() != NULL) {
@@ -53,6 +54,13 @@ void Bone::calculate_matrices()
 		child_at(i)->calculate_matrices();
 	}
 */
+=======
+	translationTransformCurrentJointToNext = translate(
+		this->direction_in_world_space[0]*this->get_length(),
+		this->direction_in_world_space[1]*this->get_length(),
+		this->direction_in_world_space[2]*this->get_length());
+
+>>>>>>> a6055c7abf770844bc1237dc869895366b2b4460
 
 	////
 	// Task 4.6: Implement matrix calculation (skinning)
@@ -80,13 +88,16 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 {
 	////
 	// Task 3.1: Implement matrix calculation
-
 	Mat4 t;
+<<<<<<< HEAD
 	if (get_parent() == NULL) {
 		t.identity();
 		return t;
 	}
 	t = orientationTransformPrevJointToCurrent * get_parent()->get_translation_transform_current_joint_to_next();
+=======
+
+>>>>>>> a6055c7abf770844bc1237dc869895366b2b4460
 	return t;
 }
 
