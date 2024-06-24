@@ -40,6 +40,17 @@ void Bone::calculate_matrices()
 	translationTransformCurrentJointToNext = translate(get_direction_in_world_space() * get_length());
 
 	orientationTransformPrevJointToCurrent.identity();
+	if (get_parent() != NULL) {
+		auto parent = get_parent()->get_direction_in_world_space();
+		auto current = get_direction_in_world_space();
+		float angle = 0;
+		if (cgv::math::sqr_length(current) != 0 && cgv::math::sqr_length(parent) != 0) {
+			angle = cgv::math::dot(parent, current) / (cgv::math::sqr_length(parent) * cgv::math::sqr_length(current));
+		}
+		orientationTransformPrevJointToCurrent = rotate(cgv::math::cross(parent, current), angle);
+
+	}
+	
 	
 
 	// translationTransformCurrentJointToNext
@@ -62,11 +73,13 @@ Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
 	// Task 3.1: Implement matrix calculation
 
 	Mat4 t;
-	t = calculate_transform_prev_to_current_without_dofs();
+	t = orientationTransformPrevJointToCurrent;
 	for (int i = 0; i < dof_count(); i++)
 	{
 		t *= get_dof(i)->calculate_matrix();
 	}
+	
+	if (get_parent() != NULL) t *= get_parent()->get_translation_transform_current_joint_to_next();
 
 	return t;
 }
@@ -77,7 +90,8 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 	// Task 3.1: Implement matrix calculation
 	
 	Mat4 t;
-	t = orientationTransformPrevJointToCurrent * get_parent()->get_translation_transform_current_joint_to_next();
+	if (get_parent() != NULL) t = orientationTransformPrevJointToCurrent * get_parent()->get_translation_transform_current_joint_to_next();
+	else t = orientationTransformPrevJointToCurrent;
 	return t;
 }
 
