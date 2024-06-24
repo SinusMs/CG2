@@ -38,11 +38,37 @@ void Bone::calculate_matrices()
 	////
 	// Task 3.1: Implement matrix calculation
 	translationTransformCurrentJointToNext = translate(
-		this->direction_in_world_space[0]*this->get_length(),
-		this->direction_in_world_space[1]*this->get_length(),
-		this->direction_in_world_space[2]*this->get_length());
+		cgv::math::fvec<float, 3>(1, 0, 0) * this->length);
+		//this->direction_in_world_space*this->get_length());
+	Vec3 zComp = Vec3(this->direction_in_world_space[0], direction_in_world_space[1], 0);
+	zComp = zComp.normalize() * zComp;
 
+	Vec3 yComp = Vec3(this->direction_in_world_space[0], 0, this->direction_in_world_space[2]);
+	yComp = yComp.normalize() * yComp;
 
+	orientationTransformPrevJointToCurrent = rotate(cgv::math::fvec<float, 3>(0, 1, 0), cgv::math::dot(yComp, Vec3(1, 0, 0)))
+		* rotate(Vec3(0,0,1),dot(zComp, Vec3(1, 0, 0)));
+
+/*
+	cgv::math::fvec<float, 3> parent_vec = get_parent()->get_direction_in_world_space();
+
+	cgv::math::fvec<float, 3> v = cgv::math::cross(parent_vec, get_direction_in_world_space());
+	float s = cgv::math::sqr_length(v);
+	float c = cgv::math::dot(parent_vec, get_direction_in_world_space());
+
+	Mat4 vx;
+	vx(0,1) -= v[2];
+	vx(0,2) += v[1];
+	vx(1,0) += v[2];
+	vx(1,2) -= v[0];
+	vx(2,0) -= v[1];
+	vx(2,1) += v[0];
+
+	Mat4 t;
+	t.identity();
+	t += vx + cgv::math::sqr(vx) * 1 / (1 + c);
+
+*/
 	////
 	// Task 4.6: Implement matrix calculation (skinning)
 
