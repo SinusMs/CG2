@@ -37,8 +37,31 @@ void Bone::calculate_matrices()
 
 	////
 	// Task 3.1: Implement matrix calculation
+	
+	
+	if (parent == NULL)
+		orientationModelTransformPrevJointToCur.identity();
+	else {
+		// calculate direction vectors in the previous bone's local coordinate system
+		// w clip not necessary here as we are only rotating, so the w component will always be 1
+		Vec3 prev_vector = parent->orientationSystemTransformGlobalToLocal * parent->direction_in_world_space.lift();
+		Vec3 cur_vector = parent->orientationSystemTransformGlobalToLocal * direction_in_world_space.lift();
 
+		// calcualate rotation data
+		float angle_degrees = std::acos(cgv::math::dot(cur_vector, prev_vector)) * (180 / PI);
+		Vec3 axis = cgv::math::cross(cur_vector, prev_vector);
 
+		// calcualate rotation matrix
+		orientationModelTransformPrevJointToCur = rotate(axis, angle_degrees);
+	}
+	
+	// Model transformation that translates to the next bone from the current bone (in the current bone's coordinate system); Task 3.1
+	// Mat4 translationModelTransformCurJointToNext;
+	if (parent == NULL)
+		translationModelTransformCurJointToNext.identity();
+	else {
+		translationModelTransformCurJointToNext = translate(direction_in_world_space * length);
+	}
 
 	////
 	// Task 4.6: Implement matrix calculation (skinning)
@@ -59,7 +82,7 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 	////
 	// Task 3.1: Implement matrix calculation
 
-	Mat4 t;
+	Mat4 t = orientationModelTransformPrevJointToCur * translationModelTransformCurJointToNext;
 	return t;
 }
 
