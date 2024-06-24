@@ -37,7 +37,7 @@ void Bone::calculate_matrices()
 
 	////
 	// Task 3.1: Implement matrix calculation
-	translationTransformCurrentJointToNext = translate(get_direction_in_world_space() * get_length());
+	translationModelTransformCurJointToNext = translate(get_direction_in_world_space() * get_length());
 
 	if (get_parent() != NULL) {
 		auto parent = get_parent()->get_direction_in_world_space();
@@ -46,9 +46,9 @@ void Bone::calculate_matrices()
 		if (cgv::math::sqr_length(current) != 0 && cgv::math::sqr_length(parent) != 0) {
 			angle = cgv::math::dot(parent, current) / (cgv::math::sqr_length(parent) * cgv::math::sqr_length(current));
 		}
-		orientationTransformPrevJointToCurrent = rotate(cgv::math::cross(parent, current), angle);
+		orientationModelTransformPrevJointToCur = rotate(cgv::math::cross(parent, current), angle);
 	}
-	else orientationTransformPrevJointToCurrent.identity();
+	else orientationModelTransformPrevJointToCur.identity();
 
 	for (int i = 0; i < childCount(); i++) {
 		child_at(i)->calculate_matrices();
@@ -71,7 +71,7 @@ Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
 	}
 	t = calculate_transform_prev_to_current_without_dofs();
 	for (int i = 0; i < dof_count(); i++) {
-		t *= orientationTransformPrevJointToCurrent * get_dof(i)->calculate_matrix() * get_parent()->get_translation_transform_current_joint_to_next();
+		t *= orientationModelTransformPrevJointToCur * get_dof(i)->calculate_matrix() * get_parent()->get_translation_transform_current_joint_to_next();
 	}
 	return t;
 }
@@ -86,7 +86,7 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 		t.identity();
 		return t;
 	}
-	t = orientationTransformPrevJointToCurrent * get_parent()->get_translation_transform_current_joint_to_next();
+	t = orientationModelTransformPrevJointToCur * get_parent()->get_translation_transform_current_joint_to_next();
 	return t;
 }
 
