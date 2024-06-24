@@ -42,7 +42,7 @@ void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& global_to_par
 	cgv::vec4 tip = global_to_parent_local * node->get_bone_local_tip_position();
 
 	glBegin(GL_LINES);
-	glColor3f(1,1,1);
+	glColor3f(level, level, level);
 	glVertex3f(root[0], root[1], root[2]);
 	glVertex3f(tip[0], tip[1], tip[2]);
 	glEnd();

@@ -36,13 +36,19 @@ void Bone::calculate_matrices()
 
 	////
 	// Task 3.1: Implement matrix calculation
-	translationTransformCurrentJointToNext = translate(get_direction_in_world_space()*get_length());
+	translationTransformCurrentJointToNext = translate(get_direction_in_world_space() * get_length());
 
-// 	auto parent = get_parent()->get_direction_in_world_space();
-// 	auto current = get_direction_in_world_space();
-// 	float angle = cgv::math::dot(parent, current) / (cgv::math::sqr_length(parent) * cgv::math::sqr_length(current) + 1);
-// 	orientationTransformPrevJointToCurrent = rotate(cgv::math::cross(parent, current), angle);
-//
+	if (get_parent() != NULL) {
+		auto parent = get_parent()->get_direction_in_world_space();
+		auto current = get_direction_in_world_space();
+		float angle = 0;
+		if (cgv::math::sqr_length(current) != 0 && cgv::math::sqr_length(parent) != 0) {
+			angle = cgv::math::dot(parent, current) / (cgv::math::sqr_length(parent) * cgv::math::sqr_length(current));
+		}
+		orientationTransformPrevJointToCurrent = rotate(cgv::math::cross(parent, current), angle);
+	}
+	else orientationTransformPrevJointToCurrent.identity();
+
 	for (int i = 0; i < childCount(); i++) {
 		child_at(i)->calculate_matrices();
 	}
@@ -58,6 +64,14 @@ Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
 	// Task 3.1: Implement matrix calculation
 
 	Mat4 t;
+	if (get_parent() == NULL) {
+		t.identity();
+		return t;
+	}
+	t = calculate_transform_prev_to_current_without_dofs();
+	for (int i = 0; i < dof_count(); i++) {
+		t *= orientationTransformPrevJointToCurrent * get_dof(i)->calculate_matrix() * get_parent()->get_translation_transform_current_joint_to_next();
+	}
 	return t;
 }
 
@@ -65,29 +79,13 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 {
 	////
 	// Task 3.1: Implement matrix calculation
-	// cgv::math::fvec<float, 3> parent_vec = get_parent()->get_direction_in_world_space();
 
-	// cgv::math::fvec<float, 3> v = cgv::math::cross(parent_vec, get_direction_in_world_space());
-	// float c = cgv::math::dot(parent_vec, get_direction_in_world_space());
-
-	// Mat4 vx;
-	// vx(0,1) = -v[2];
-	// vx(0,2) = v[1];
-	// vx(1,0) = v[2];
-	// vx(1,2) = -v[0];
-	// vx(2,0) = -v[1];
-	// vx(2,1) = v[0];
-
-	// Mat4 t;
-	// t.identity();
-	// t += vx + cgv::math::sqr(vx) * 1 / (1 + c);
-
-	auto parent = get_parent()->get_direction_in_world_space();
-	auto current = get_direction_in_world_space();
-
-	float angle = cgv::math::dot(parent, current) / (cgv::math::sqr_length(parent) * cgv::math::sqr_length(current) + 1);
-
-	Mat4 t = rotate(cgv::math::cross(parent, current), angle);
+	Mat4 t;
+	if (get_parent() == NULL) {
+		t.identity();
+		return t;
+	}
+	t = orientationTransformPrevJointToCurrent * get_parent()->get_translation_transform_current_joint_to_next();
 	return t;
 }
 
