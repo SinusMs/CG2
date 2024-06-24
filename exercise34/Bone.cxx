@@ -37,7 +37,12 @@ void Bone::calculate_matrices()
 	////
 	// Task 3.1: Implement matrix calculation
 	translationTransformCurrentJointToNext = translate(get_direction_in_world_space()*get_length());
-	orientationTransformPrevJointToCurrent = calculate_transform_prev_to_current_without_dofs();
+
+// 	auto parent = get_parent()->get_direction_in_world_space();
+// 	auto current = get_direction_in_world_space();
+// 	float angle = cgv::math::dot(parent, current) / (cgv::math::sqr_length(parent) * cgv::math::sqr_length(current) + 1);
+// 	orientationTransformPrevJointToCurrent = rotate(cgv::math::cross(parent, current), angle);
+//
 	for (int i = 0; i < childCount(); i++) {
 		child_at(i)->calculate_matrices();
 	}
@@ -60,23 +65,29 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 {
 	////
 	// Task 3.1: Implement matrix calculation
-	cgv::math::fvec<float, 3> parent_vec = get_parent()->get_direction_in_world_space();
+	// cgv::math::fvec<float, 3> parent_vec = get_parent()->get_direction_in_world_space();
 
-	cgv::math::fvec<float, 3> v = cgv::math::cross(parent_vec, get_direction_in_world_space());
-	float s = cgv::math::sqr_length(v);
-	float c = cgv::math::dot(parent_vec, get_direction_in_world_space());
+	// cgv::math::fvec<float, 3> v = cgv::math::cross(parent_vec, get_direction_in_world_space());
+	// float c = cgv::math::dot(parent_vec, get_direction_in_world_space());
 
-	Mat4 vx;
-	vx(0,1) = -v[2];
-	vx(0,2) = v[1];
-	vx(1,0) = v[2];
-	vx(1,2) = -v[0];
-	vx(2,0) = -v[1];
-	vx(2,1) = v[0];
+	// Mat4 vx;
+	// vx(0,1) = -v[2];
+	// vx(0,2) = v[1];
+	// vx(1,0) = v[2];
+	// vx(1,2) = -v[0];
+	// vx(2,0) = -v[1];
+	// vx(2,1) = v[0];
 
-	Mat4 t;
-	t.identity();
-	t += vx + cgv::math::sqr(vx) * 1 / (1 + c);
+	// Mat4 t;
+	// t.identity();
+	// t += vx + cgv::math::sqr(vx) * 1 / (1 + c);
+
+	auto parent = get_parent()->get_direction_in_world_space();
+	auto current = get_direction_in_world_space();
+
+	float angle = cgv::math::dot(parent, current) / (cgv::math::sqr_length(parent) * cgv::math::sqr_length(current) + 1);
+
+	Mat4 t = rotate(cgv::math::cross(parent, current), angle);
 	return t;
 }
 
