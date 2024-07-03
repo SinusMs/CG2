@@ -64,14 +64,14 @@ Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
 	// Task 3.1: Implement matrix calculation
 
 	Mat4 t;
-	if (get_parent() == NULL) {
-		t.identity();
-		return t;
+	t = orientationTransformPrevJointToCurrent;
+	for (int i = 0; i < dof_count(); i++)
+	{
+		t *= get_dof(i)->calculate_matrix();
 	}
-	t = calculate_transform_prev_to_current_without_dofs();
-	for (int i = 0; i < dof_count(); i++) {
-		t *= orientationTransformPrevJointToCurrent * get_dof(i)->calculate_matrix() * get_parent()->get_translation_transform_current_joint_to_next();
-	}
+
+	if (get_parent() != NULL) t *= get_parent()->get_translation_transform_current_joint_to_next();
+
 	return t;
 }
 
@@ -81,11 +81,8 @@ Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 	// Task 3.1: Implement matrix calculation
 
 	Mat4 t;
-	if (get_parent() == NULL) {
-		t.identity();
-		return t;
-	}
-	t = orientationTransformPrevJointToCurrent * get_parent()->get_translation_transform_current_joint_to_next();
+	if (get_parent() != NULL) t = orientationTransformPrevJointToCurrent * get_parent()->get_translation_transform_current_joint_to_next();
+	else t = orientationTransformPrevJointToCurrent;
 	return t;
 }
 

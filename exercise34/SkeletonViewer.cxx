@@ -34,20 +34,45 @@ SkeletonViewer::SkeletonViewer(DataStore* data)
 }
 
 //draws a part of a skeleton, represented by the given root node
-void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& global_to_parent_local, context& ctx, int level)
+void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& global_to_parent_local, context& ctx, int level, cgv::media::color<float> color = cgv::media::color<float>((float)38 / 255, (float)25 / 255, (float)68 / 255))
 {
 	////
 	// Task 3.2, 4.3: Visualize the skeleton
-	cgv::vec4 root = global_to_parent_local * node->get_bone_local_root_position();
-	cgv::vec4 tip = global_to_parent_local * node->get_bone_local_tip_position();
-
+	cgv::dvec4 root = global_to_parent_local * node->get_bone_local_root_position();
+	cgv::dvec4 tip = global_to_parent_local * node->get_bone_local_tip_position();
+	
+	
+	/*
 	glBegin(GL_LINES);
-	glColor3f(level, level, level);
+	glColor3f(level * 10.0 / 255.0, level * 10.0 / 255.0, level * 10.0 / 255.0);
 	glVertex3f(root[0], root[1], root[2]);
 	glVertex3f(tip[0], tip[1], tip[2]);
 	glEnd();
-	for (int i = 0; i < node->childCount(); i++){
-		draw_skeleton_subtree(node->child_at(i), node->get_translation_transform_current_joint_to_next() * translate(root), ctx, level+1);
+	*/
+
+	cgv::vec4 rootgl = cgv::math::inv(global_to_parent_local) * node->get_bone_local_root_position();
+	cgv::vec4 tipgl = cgv::math::inv(global_to_parent_local) * node->get_bone_local_tip_position();
+
+	// double length = (cgv::dvec3(tip[0], tip[1], tip[2]) - cgv::dvec3(root[0], root[1], root[2])).length();
+	// std::cout << "try to draw: " << node->get_name() << " with length: " << node->get_length() << " root to tip is: " << length << std::endl;
+	if (!ctx.ref_default_shader_program().is_enabled())  ctx.ref_default_shader_program().enable(ctx);
+
+	if (node->get_length() >= 1e-8) {
+		ctx.set_color(color);
+		ctx.tesselate_arrow(root, tip);
+
+		cgv::media::color<float, cgv::media::HLS> color_next(color);
+		color_next.H() = std::fmod(color_next.H() + 0.2f, 1.0f);
+		color_next.S() = std::fmod(color_next.S() - 0.05f, 1.0f);
+		color = color_next;
+	}
+	 
+	
+	
+
+
+	for (int i = 0; i < node->childCount(); i++) {
+		draw_skeleton_subtree(node->child_at(i), node->get_translation_transform_current_joint_to_next() * translate(root), ctx, level + 1, color);
 	}
 }
 
