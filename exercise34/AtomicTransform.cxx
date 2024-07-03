@@ -40,7 +40,45 @@ Mat4 AtomicRotationTransform::calculate_matrix()
 	return rotate(axis, (float)value);	
 }
 
-
+void AtomicRotationTransform::drawIndicator(float size)
+{
+	if (lower_limit == upper_limit)
+		return;
+	//Calculate rotation matrix from x-axis to current axis
+	Vec3 rot_axis = cgv::math::cross(Vec3(1, 0, 0), axis);
+	float angle = acosf(axis.x() / axis.length());
+	Mat4 t;
+	if (angle == 0)
+		t.identity();
+	else
+		t = rotate(rot_axis, angle * 180.0f / 3.1415926f);
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex3f(0, 0, 0);
+	for (float v = (float)lower_limit; v <= upper_limit; v += 5)
+	{
+		auto p = t * size * Vec4(0, -cosf(v * PI / 180.0f), -sinf(v * PI / 180.0f), 0);
+		glVertex3f(p.x(), p.y(), p.z());
+	}
+	auto end = t * size * Vec4(0, -cosf((float)upper_limit * PI / 180.0f), -sinf((float)upper_limit * PI / 180.0f), 0);
+	glVertex3f(end.x(), end.y(), end.z());
+	glEnd();
+}
+void AtomicRotationTransform::drawActualIndicator(float size)
+{
+	//Calculate rotation matrix from x-axis to current axis
+	Vec3 rot_axis = cgv::math::cross(Vec3(1, 0, 0), axis);
+	float angle = acosf(axis.x() / axis.length());
+	Mat4 t;
+	if (angle == 0)
+		t.identity();
+	else
+		t = rotate(rot_axis, angle * 180.0f / 3.1415926f);
+	glBegin(GL_LINES);
+	glVertex3f(0, 0, 0);
+	auto p = t * size * Vec4(0, -cosf((float)value * PI / 180.0f), -sinf((float)value * PI / 180.0f), 0);
+	glVertex3f(p.x(), p.y(), p.z());
+	glEnd();
+}
 
 void AtomicRotationTransform::optimize_value(const Vec3& local_vector, const Vec3& target, bool inverse)
 {
