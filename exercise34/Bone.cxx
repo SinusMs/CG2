@@ -28,39 +28,26 @@ Bone::~Bone()
 
 void Bone::calculate_matrices()
 {
-	orientationTransformGlobalToLocal.identity();
+	orientationSystemTransformLocalToGlobal.identity();
 	std::for_each(orientation.begin(), orientation.end(), [&](AtomicTransform* t) {
-		orientationTransformGlobalToLocal = orientationTransformGlobalToLocal * t->calculate_matrix();
+        orientationSystemTransformLocalToGlobal = orientationSystemTransformLocalToGlobal * t->calculate_matrix();
 	});
-	orientationTransformLocalToGlobal = cgv::math::inv(orientationTransformGlobalToLocal);
+    orientationModelTransformLocalToGlobal = cgv::math::inv(orientationSystemTransformLocalToGlobal);
+    // ^ same thing:  orientationSystemTransformGlobalToLocal = cgv::math::inv(orientationModelTransformGlobalToLocal);
 
-	////
-	// Task 3.1: Implement matrix calculation
-<<<<<<< HEAD
-	translationTransformCurrentJointToNext = translate(get_direction_in_world_space() * get_length());
-
-	if (get_parent() != NULL) {
-		auto parent = get_parent()->get_direction_in_world_space();
-		auto current = get_direction_in_world_space();
-		float angle = 0;
-		if (cgv::math::sqr_length(current) != 0 && cgv::math::sqr_length(parent) != 0) {
-			angle = cgv::math::dot(parent, current) / (cgv::math::sqr_length(parent) * cgv::math::sqr_length(current));
-		}
-		orientationTransformPrevJointToCurrent = rotate(cgv::math::cross(parent, current), angle);
+Vec4 globalDirection = Vec4(direction_in_world_space.x() * length, direction_in_world_space.y() * length, direction_in_world_space.z() * length, 0);
+	Vec4 localDirection = orientationSystemTransformGlobalToLocal * globalDirection;
+    translationModelTransformCurJointToNext = translate(localDirection.x(), localDirection.y(), localDirection.z());
+	if (parent != nullptr)
+	{
+        orientationModelTransformPrevJointToCur = parent->orientationModelTransformLocalToGlobal * orientationModelTransformGlobalToLocal;
+        translationSystemTransformLocalToGlobal = parent->translationSystemTransformLocalToGlobal * translate(parent->direction_in_world_space * parent->length);
 	}
-	else orientationTransformPrevJointToCurrent.identity();
-/*
-	for (int i = 0; i < childCount(); i++) {
-		child_at(i)->calculate_matrices();
+	else
+	{
+        orientationModelTransformPrevJointToCur = orientationSystemTransformLocalToGlobal;
+        translationSystemTransformLocalToGlobal.identity();
 	}
-*/
-=======
-	translationTransformCurrentJointToNext = translate(
-		this->direction_in_world_space[0]*this->get_length(),
-		this->direction_in_world_space[1]*this->get_length(),
-		this->direction_in_world_space[2]*this->get_length());
-
->>>>>>> a6055c7abf770844bc1237dc869895366b2b4460
 
 	////
 	// Task 4.6: Implement matrix calculation (skinning)
@@ -69,35 +56,26 @@ void Bone::calculate_matrices()
 
 Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
 {
-	////
-	// Task 3.1: Implement matrix calculation
-
-	Mat4 t;
-	if (get_parent() == NULL) {
-		t.identity();
-		return t;
-	}
-	t = calculate_transform_prev_to_current_without_dofs();
-	for (int i = 0; i < dof_count(); i++) {
-		t *= orientationTransformPrevJointToCurrent * get_dof(i)->calculate_matrix() * get_parent()->get_translation_transform_current_joint_to_next();
-	}
+// Calculates (T_prev2cur * O_prev2cur) * DoF_cur
+	//
+	//	T.....translation matrix (e.g. T_prev translation from previous bone to current)
+	//	O....."orientation" matrix, i.e. an arbitrary rotation of the local coordinate system relative to the parent. It is chosen such that we can define our degrees of freedom as axis-aligned Euler angles
+	//	DoF...degrees-of-freedom matrix - typically just a combination of rotations, ASF files use 1 to 3 Euler angles
+	Mat4 t = calculate_transform_prev_to_current_without_dofs();
+	for (unsigned int i = 0; i < dofs.size(); ++i)
+		t = t * dofs[i]->calculate_matrix();
 	return t;
 }
 
 Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 {
-	////
-	// Task 3.1: Implement matrix calculation
-	Mat4 t;
-<<<<<<< HEAD
-	if (get_parent() == NULL) {
-		t.identity();
-		return t;
-	}
-	t = orientationTransformPrevJointToCurrent * get_parent()->get_translation_transform_current_joint_to_next();
-=======
-
->>>>>>> a6055c7abf770844bc1237dc869895366b2b4460
+// Calculates T_prev2cur * O_prev2cur
+	//
+	//	T.....translation matrix (e.g. T_prev translation from previous bone to current)
+	//	O....."orientation" matrix, i.e. an arbitrary rotation of the local coordinate system relative to the parent. It is chosen such that we can define our degrees of freedom as axis-aligned Euler angles
+	Mat4 t = orientationModelTransformPrevJointToCur;
+	if (parent != nullptr)
+		t = parent->translationModelTransformCurJointToNext * t;
 	return t;
 }
 
@@ -142,11 +120,11 @@ std::shared_ptr<AtomicTransform> Bone::get_dof(int dofIndex) const { return dofs
 
 const Mat4& Bone::get_binding_pose_matrix() const
 {
-	return transformLocalToGlobal;
+	return systemTransformGlobalToLocal;
 }
 
-const Mat4& Bone::get_translation_transform_current_joint_to_next() const { return translationTransformCurrentJointToNext; }
-const Mat4& Bone::get_orientation_transform_prev_joint_to_current() const { return orientationTransformPrevJointToCurrent; }
+const Mat4& Bone::get_translation_transform_current_joint_to_next() const { return translationModelTransformCurJointToNext; }
+const Mat4& Bone::get_orientation_transform_prev_joint_to_current() const { return orientationModelTransformPrevJointToCur; }
 
 Vec4 Bone::get_bone_local_root_position() const { return Vec4(0, 0, 0, 1); }
-Vec4 Bone::get_bone_local_tip_position() const { return translationTransformCurrentJointToNext * Vec4(0, 0, 0, 1); }
+Vec4 Bone::get_bone_local_tip_position() const { return translationModelTransformCurJointToNext * Vec4(0, 0, 0, 1); }

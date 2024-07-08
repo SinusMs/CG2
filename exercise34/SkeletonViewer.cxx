@@ -21,7 +21,7 @@ cgv::render::shader_program Mesh::prog;
 // The constructor of this class
 SkeletonViewer::SkeletonViewer(DataStore* data)
 	: node("Skeleton Viewer"), data(data)
-	/* Bonus task: initialize members relevant for animation */
+	, animation(nullptr), animationTime(0)
 {	
 	connect(data->skeleton_changed, this, &SkeletonViewer::skeleton_changed);
 
@@ -34,57 +34,76 @@ SkeletonViewer::SkeletonViewer(DataStore* data)
 }
 
 //draws a part of a skeleton, represented by the given root node
-void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& global_to_parent_local, context& ctx, int level)
+void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& parent_local_to_global, context& ctx, int level, bool arrows, bool indicators)
 {
-	////
-	// Task 3.2, 4.3: Visualize the skeleton
-<<<<<<< HEAD
-	cgv::vec4 root = global_to_parent_local * node->get_bone_local_root_position();
-	cgv::vec4 tip = global_to_parent_local * node->get_bone_local_tip_position();
+	auto current_local_to_global = parent_local_to_global * node->calculate_transform_prev_to_current_with_dofs();
+	auto my_root_position = current_local_to_global * node->get_bone_local_root_position();
+	auto my_tip_position = current_local_to_global * node->get_bone_local_tip_position();
+	if (arrows)
+	{
+		static const cgv::media::illum::surface_material::color_type colors[] =
+		{
+			{  27.0/256.0, 158.0/256.0, 119.0/256.0 },
+			{ 217.0/256.0,  95.0/256.0,   2.0/256.0 },
+			{ 117.0/256.0, 112.0/256.0, 179.0/256.0 },
+			{ 231.0/256.0,  41.0/256.0, 138.0/256.0 },
+			{ 102.0/256.0, 166.0/256.0,  30.0/256.0 },
+			{ 230.0/256.0, 171.0/256.0,   2.0/256.0 },
+			{ 166.0/256.0, 118.0/256.0,  29.0/256.0 },
+		};
 
-	ctx.ref_default_shader_program().enable(ctx);
-	ctx.tesselate_arrow(root, tip);
-	ctx.ref_default_shader_program().disable(ctx);
+		material.set_diffuse_reflectance(colors[level%7]);
+		ctx.set_material(material);
 
-	for (int i = 0; i < node->childCount(); i++){
-		ctx.set_color(cgv::rgba((level-2)*0.05f+0.1f , level*0.2f, (level-4)*0.2f, 255));
-		draw_skeleton_subtree(node->child_at(i), node->get_translation_transform_current_joint_to_next() * translate(root), ctx, level+1);
-=======
-
-	std::cout << "level: " << level << std::endl;
-	cgv::vec4 base = global_to_parent_local * node->get_bone_local_root_position();
-	cgv::vec4 tip = global_to_parent_local * node->get_bone_local_tip_position();
-	glBegin(GL_LINES);
-	glColor3f(1,0,0);
-	glVertex3f(base[0],base[1],base[2]);
-
-	glVertex3f(tip[0],tip[1],tip[2]);
-
-	glEnd();
-
-	for (int i = 0; i < node->childCount(); i++) {
-		draw_skeleton_subtree(node->child_at(i), node->get_translation_transform_current_joint_to_next()*translate(base), ctx, level + 1);
->>>>>>> a6055c7abf770844bc1237dc869895366b2b4460
+		ctx.ref_surface_shader_program().enable(ctx);
+		cgv::dvec3
+			aRoot(my_root_position.x(), my_root_position.y(), my_root_position.z()),
+			aTip(my_tip_position.x(), my_tip_position.y(), my_tip_position.z());
+		if ((aTip-aRoot).length() > std::numeric_limits<double>::epsilon())
+			ctx.tesselate_arrow(aRoot, aTip, 0.1, 2.0, 0.5);
+		ctx.ref_surface_shader_program().disable(ctx);
+	}
+	Mat4 dof_matrix = parent_local_to_global * node->calculate_transform_prev_to_current_without_dofs();
+	float indicatorSize = (data->get_skeleton()->getMax()-data->get_skeleton()->getMin()).length() * 0.03125f;
+	//draw indicators for dofs
+	if (indicators)
+	{
+		glDepthMask(false);
+		int i = 0;
+		for (int i = 0; i < node->dof_count(); i++)
+		{
+			auto t = node->get_dof(i);
+			glPushMatrix();
+			glMultMatrixf(dof_matrix);
+			glColor4f(0, 1, 0, 0.2f);
+			t->drawIndicator(indicatorSize);
+			glColor4f(0.5f, 1, 0.5f, 1);
+			t->drawActualIndicator(indicatorSize);
+			glPopMatrix();
+			dof_matrix = dof_matrix * node->get_dof(i)->calculate_matrix();
+		}
+		glDepthMask(true);
+	}
+	int n = node->childCount();
+	for (int i = 0; i < n; ++i)
+	{
+		auto child = node->child_at(i);
+		draw_skeleton_subtree(child, current_local_to_global, ctx, level+1, arrows, indicators);
 	}
 }
 
 void SkeletonViewer::timer_event(double, double dt)
 {
-	////
-	// Bonus task: implement animation */
+if (animation && playing)
+	{
+		animationTime += dt;
+		int frame = (int)std::round(animationTime * 120.0) % animation->frame_count();
+		animation->apply_frame(frame);
+	}
 }
 
-void SkeletonViewer::start_animation()
-{
-	////
-	// Bonus task: implement animation
-}
-
-void SkeletonViewer::stop_animation()
-{
-	////
-	// Bonus task: implement animation
-}
+void SkeletonViewer::start_animation() { playing = true; }
+void SkeletonViewer::stop_animation() { playing = false; }
 
 void SkeletonViewer::skeleton_changed(std::shared_ptr<Skeleton> s) 
 {
@@ -248,7 +267,23 @@ void SkeletonViewer::load_animation()
 	std::string filename = cgv::gui::file_open_dialog("Open", "Animation File (*.amc):*.amc");
 	if (!filename.empty())
 	{
-		/*Bonus task: load animation from selected file */
+		if (animation)
+		{
+			delete animation;
+			animation = nullptr;
+		}
+		auto a = new Animation();
+		if (a->read_amc_file(filename, data->get_skeleton().get()))
+		{
+			animationTime = 0;
+			animation = a;
+			playing = true;
+		}
+		else
+		{
+			delete a;
+			cgv::gui::message("Could not load specified AMC file.");
+		}
 	}
 }
 
@@ -310,9 +345,19 @@ void SkeletonViewer::generate_bone_gui(Bone* bone)
 
 void SkeletonViewer::draw(context& ctx)
 {
-	////
-	// Task 3.3: If you require it, extend this method with additional logic
+if (data->get_skeleton() != nullptr)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	if (data->get_skeleton() != nullptr)
-		draw_skeleton_subtree(data->get_skeleton()->get_root(), data->get_skeleton()->get_origin(), ctx, 0);
+		glEnable(GL_CULL_FACE);		
+		draw_skeleton_subtree(
+			data->get_skeleton()->get_root(), data->get_skeleton()->get_origin(), ctx, 0,
+			data->get_mesh() ? false : true, false
+		);
+		glDisable(GL_CULL_FACE);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		draw_skeleton_subtree(data->get_skeleton()->get_root(), data->get_skeleton()->get_origin(), ctx, 0, false, true);
+		glEnable(GL_CULL_FACE);
+	}
 }
