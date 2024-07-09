@@ -57,7 +57,10 @@ public:
 	virtual void optimize_value(const Vec3& local_vector, const Vec3& target, bool inverse = false) = 0;
 	virtual void optimize_value(const Vec3& local_vector, const Vec3& target) { optimize_value(local_vector, target, false); }
 
-	
+	//Draws an indicator that visualizes the transform, including its limits.
+	virtual void drawIndicator(float size) = 0;
+	//Draws an indicator that visualizes the current scalar parameter.
+	virtual void drawActualIndicator(float size) = 0;
 
 	std::string get_name() const;	
 
@@ -84,7 +87,8 @@ public:
 	virtual Mat4 calculate_matrix();
 	virtual void optimize_value(const Vec3& local_vector, const Vec3& target, bool inverse = false);
 
-	
+	virtual void drawIndicator(float size);
+	virtual void drawActualIndicator(float size);
 
 protected:
 	Vec3 axis;
@@ -115,7 +119,8 @@ public:
 	virtual Mat4 calculate_matrix();
 	virtual void optimize_value(const Vec3& local_vector, const Vec3& target, bool inverse = false);
 
-	
+	virtual void drawIndicator(float size) { };
+	virtual void drawActualIndicator(float size) { };
 
 private:
 	int dim;
