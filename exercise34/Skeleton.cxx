@@ -376,12 +376,13 @@ void Skeleton::read_pinocchio_file(std::string filename)
 	if (o)
 	{
 		/*Task 4.3: Read Pinocchio file */
-
+/*
 		// create list with bones in the same depth first order
 		Bone* root = Skeleton::get_root();
 		std::list<Bone*> to_visit;
 		std::list<Bone*> bones;
 		to_visit.push_back(root);
+		std::map<int, std::string> bone_id_name;
 
 		while (to_visit.size() != 0)
 		{
@@ -397,9 +398,10 @@ void Skeleton::read_pinocchio_file(std::string filename)
 			}
 		}
 
-		
+		//holds 
 		std::string line;
 		while (getline(o, line)) {
+			//starts as root
 			Bone* current_bone = bones.front();
 			bones.pop_front();
 			// get global position from line
@@ -424,6 +426,31 @@ void Skeleton::read_pinocchio_file(std::string filename)
 			current_bone->set_direction_in_world_space(global_pos.normalize());
 			current_bone->set_length(global_pos.length());
 		}
+			*/
+		std::map<int, std::string> bone_id_name;
+
+		std::string line;
+
+		Bone* current_b = this->get_root();
+
+		while (std::getline(o, line)) 
+		{
+			std::stringstream line_ss(line);
+
+			std::string str;
+			std::list<std::string> line_tokenzd;
+
+			while (std::getline(line_ss, str, ' ')) 
+			{
+				line_tokenzd.push_back(str);
+			}
+
+			
+
+		}
+		
+
+
 		o.close();
 
 		postprocess(root, get_origin_vec());
