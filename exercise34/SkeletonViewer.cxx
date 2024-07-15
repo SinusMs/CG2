@@ -40,15 +40,10 @@ void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& parent_local_
 	auto current_local_to_global = parent_local_to_global * node->calculate_transform_prev_to_current_with_dofs();
 	auto my_root_position = current_local_to_global * node->get_bone_local_root_position();
 	auto my_tip_position = current_local_to_global * node->get_bone_local_tip_position();
-<<<<<<< HEAD
-	
-=======
->>>>>>> branch123
 	if (arrows)
 	{
 		static const cgv::media::illum::surface_material::color_type colors[] =
 		{
-<<<<<<< HEAD
 			{  27.0 / 256.0, 158.0 / 256.0, 119.0 / 256.0 },
 			{ 217.0 / 256.0,  95.0 / 256.0,   2.0 / 256.0 },
 			{ 117.0 / 256.0, 112.0 / 256.0, 179.0 / 256.0 },
@@ -59,38 +54,18 @@ void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& parent_local_
 		};
 
 		material.set_diffuse_reflectance(colors[level % 7]);
-=======
-			{   0.0/256.0, 256.0/256.0,   0.0/256.0 },
-			{ 256.0/256.0,   0.0/256.0,   0.0/256.0 },
-			{   0.0/256.0,   0.0/256.0, 256.0/256.0 },
-			{ 256.0/256.0,   0.0/256.0, 256.0/256.0 },
-			{ 256.0/256.0, 256.0/256.0,   0.0/256.0 },
-			{   0.0/256.0, 256.0/256.0, 256.0/256.0 },
-			{  64.0/256.0,   0.0/256.0,  64.0/256.0 },
-		};
-
-		material.set_diffuse_reflectance(colors[level%7]);
->>>>>>> branch123
 		ctx.set_material(material);
 
 		ctx.ref_surface_shader_program().enable(ctx);
 		cgv::dvec3
 			aRoot(my_root_position.x(), my_root_position.y(), my_root_position.z()),
 			aTip(my_tip_position.x(), my_tip_position.y(), my_tip_position.z());
-<<<<<<< HEAD
 		if ((aTip - aRoot).length() > std::numeric_limits<double>::epsilon())
-=======
-		if ((aTip-aRoot).length() > std::numeric_limits<double>::epsilon())
->>>>>>> branch123
 			ctx.tesselate_arrow(aRoot, aTip, 0.3 / node->get_length(), 2.0, 0.5);
 		ctx.ref_surface_shader_program().disable(ctx);
 	}
 	Mat4 dof_matrix = parent_local_to_global * node->calculate_transform_prev_to_current_without_dofs();
-<<<<<<< HEAD
 	float indicatorSize = (data->get_skeleton()->getMax() - data->get_skeleton()->getMin()).length() * 0.03125f;
-=======
-	float indicatorSize = (data->get_skeleton()->getMax()-data->get_skeleton()->getMin()).length() * 0.03125f;
->>>>>>> branch123
 	//draw indicators for dofs
 	if (indicators)
 	{
@@ -114,11 +89,7 @@ void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& parent_local_
 	for (int i = 0; i < n; ++i)
 	{
 		auto child = node->child_at(i);
-<<<<<<< HEAD
 		draw_skeleton_subtree(child, current_local_to_global, ctx, level + 1, arrows, indicators);
-=======
-		draw_skeleton_subtree(child, current_local_to_global, ctx, level+1, arrows, indicators);
->>>>>>> branch123
 	}
 }
 
@@ -133,10 +104,7 @@ void SkeletonViewer::timer_event(double, double dt)
 }
 
 void SkeletonViewer::start_animation() { playing = true; }
-<<<<<<< HEAD
 
-=======
->>>>>>> branch123
 void SkeletonViewer::stop_animation() { playing = false; }
 
 void SkeletonViewer::skeleton_changed(std::shared_ptr<Skeleton> s) 
