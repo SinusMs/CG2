@@ -60,11 +60,7 @@ void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& parent_local_
 			aRoot(my_root_position.x(), my_root_position.y(), my_root_position.z()),
 			aTip(my_tip_position.x(), my_tip_position.y(), my_tip_position.z());
 		if ((aTip-aRoot).length() > std::numeric_limits<double>::epsilon())
-<<<<<<< HEAD
-			ctx.tesselate_arrow(aRoot, aTip, 0.1, 2.0, 0.5);
-=======
 			ctx.tesselate_arrow(aRoot, aTip, 0.3 / node->get_length(), 2.0, 0.5);
->>>>>>> branch123
 		ctx.ref_surface_shader_program().disable(ctx);
 	}
 	Mat4 dof_matrix = parent_local_to_global * node->calculate_transform_prev_to_current_without_dofs();
@@ -98,11 +94,7 @@ void SkeletonViewer::draw_skeleton_subtree(Bone* node, const Mat4& parent_local_
 
 void SkeletonViewer::timer_event(double, double dt)
 {
-<<<<<<< HEAD
-if (animation && playing)
-=======
 	if (animation && playing)
->>>>>>> branch123
 	{
 		animationTime += dt;
 		int frame = (int)std::round(animationTime * 120.0) % animation->frame_count();
@@ -353,20 +345,12 @@ void SkeletonViewer::generate_bone_gui(Bone* bone)
 
 void SkeletonViewer::draw(context& ctx)
 {
-<<<<<<< HEAD
-if (data->get_skeleton() != nullptr)
-=======
 	if (data->get_skeleton() != nullptr)
->>>>>>> branch123
 	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-<<<<<<< HEAD
-		glEnable(GL_CULL_FACE);		
-=======
 		glEnable(GL_CULL_FACE);
->>>>>>> branch123
 		draw_skeleton_subtree(
 			data->get_skeleton()->get_root(), data->get_skeleton()->get_origin(), ctx, 0,
 			data->get_mesh() ? false : true, false
