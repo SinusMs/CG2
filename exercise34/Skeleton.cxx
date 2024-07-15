@@ -273,9 +273,8 @@ void Skeleton::write_pinocchio_file(const std::string& filename)
 		std::list<Vec3> global_positions;
 		std::list<int> ids;
 		std::list<int> parent_ids;
-		int id = -1;
+		int id = 0;
 
-		// o << 0 << " " << Vec3(root->get_bone_local_tip_position()) << -1 << std::endl;
 		for (size_t i = 0; i < root->childCount(); i++)
 		{
 			auto child = root->child_at(i);
@@ -339,20 +338,20 @@ void Skeleton::write_pinocchio_file(const std::string& filename)
 
 		std::cout << parent_ids.size();
 		std::cout << global_positions.size();
+
 		// write into pino file
+		o << 0 << " " << (Vec3(root->get_bone_local_tip_position()) + cgv::math::abs(min))/size << " " << - 1 << std::endl;
+
 		int n = global_positions.size();
 		for (size_t i = 0; i < n; i++)
 		{
 			Vec3 current_pos = global_positions.front() + cgv::math::abs(min);
-			o << ids.front() << " " << current_pos/size << " " << parent_ids.front() << std::endl;
+			o << ids.front() << " " << current_pos/size << " " << parent_ids.front() << " " << std::endl;
 			ids.pop_front();
 			global_positions.pop_front();
 			parent_ids.pop_front();
 		}
 
-
-		
-	
 
 		/*Task 4.1: Write Pinocchio file into o */
 	}
