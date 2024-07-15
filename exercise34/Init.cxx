@@ -23,7 +23,7 @@ struct Initializer
 
 		register_object(base_ptr(new SkeletonViewer(data)), "");
 		register_object(base_ptr(new IKViewer(data)), "");
-		//register_object(base_ptr(new SkinnedMeshViewer(data)), "");
+		register_object(base_ptr(new SkinnedMeshViewer(data)), "");
 	}
 
 	~Initializer()

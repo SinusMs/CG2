@@ -149,6 +149,37 @@ void Mesh::read_attachment(std::string filename)
 	while (std::getline(f, line))
 	{
 		/*Task 4.5: Load pinocchio attachment */
+		std::stringstream ss(line);
+		float word;
+		std::vector<float> fline;
+		while (ss >> word)
+		{
+			fline.push_back(word);
+		}
+		std::vector<std::pair<float, int>> result;
+		for (int i = 0; i < 4; i++) {
+			float max = 0;
+			int id = 0;
+			for (int j = 0; j < fline.size(); j++) {
+				if (fline[j] > max) {
+					max = fline[j];
+					id = j;
+				}
+			}
+			result.push_back({max, id});
+			fline[id] = 0;
+		}
+		Vec4 weights;
+		Vec4 indices;
+		for (int i = 0; i < result.size(); i++) {
+			weights[i] = result[i].first;
+			indices[i] = result[i].second;
+		}
+		weights.normalize();
+		std::cout << weights << " " << indices << std::endl;
+
+		bone_indices.push_back(indices);
+		bone_weights.push_back(weights);
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, boneIndexBuffer);
