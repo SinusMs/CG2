@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 #include <sstream>
+#include <list>
 
 #include "math_helper.h"
 
@@ -268,7 +269,89 @@ void Skeleton::write_pinocchio_file(const std::string& filename)
 
 	if (o)
 	{
-		/*Task 4.1: Write Pinocchio file into o */
+		Bone* root = Skeleton::get_root();
+		std::list<Bone*> to_visit;
+		std::list<Vec3> global_positions;
+		std::list<int> ids;
+		std::list<int> parent_ids;
+		int id = 0;
+
+		for (size_t i = 0; i < root->childCount(); i++)
+		{
+			auto child = root->child_at(i);
+			to_visit.push_front(child);
+			parent_ids.push_front(id);
+		}
+
+
+		// read bone information out of hierarchy and store in lists, depth first
+		while (to_visit.size() != 0)
+		{
+			auto current_bone = to_visit.front();
+			to_visit.pop_front();
+			parent_ids.push_back(parent_ids.front());
+			parent_ids.pop_front();
+			id++;
+
+
+			// add children to list
+			for (size_t i = 0; i < current_bone->childCount(); i++)
+			{
+				auto child = current_bone->child_at(i);
+				to_visit.push_front(child);
+				parent_ids.push_front(id);
+			}
+
+			//calc global bone position
+			Vec4 lokal_pos = current_bone->get_bone_local_tip_position();
+			Vec4 global_pos = current_bone->calculate_transform_prev_to_current_with_dofs() * lokal_pos;
+			auto next = current_bone->get_parent();
+			while (next->get_parent() != nullptr) {
+				global_pos = next->calculate_transform_prev_to_current_without_dofs() * global_pos;
+				next = next->get_parent();
+			}
+
+			// write current_bones information into lists file
+			ids.push_back(id);
+			global_positions.push_back(Vec3(global_pos));
+
+		}
+
+		//calculate maxima
+		Vec3 max, min;
+		max = Vec3(0, 0, 0);
+		min = Vec3(0, 0, 0);
+		for (std::list<Vec3>::iterator it = global_positions.begin(); it != global_positions.end(); ++it) {
+			max.x() = max.x() < it->x() ? it->x() : max.x();
+			max.y() = max.y() < it->y() ? it->y() : max.y();
+			max.z() = max.z() < it->z() ? it->z() : max.z();
+
+			min.x() = min.x() > it->x() ? it->x() : min.x();
+			min.y() = min.y() > it->y() ? it->y() : min.y();
+			min.z() = min.z() > it->z() ? it->z() : min.z();
+		}
+
+		//calculate max expansion
+		float size = max.x() - min.x();
+		size = size < (max.y() - min.y()) ? (max.y() - min.y()) : size;
+		size = size < (max.z() - min.z()) ? (max.z() - min.z()) : size;
+
+
+		std::cout << parent_ids.size();
+		std::cout << global_positions.size();
+
+		// write into pino file
+		o << 0 << " " << (Vec3(root->get_bone_local_tip_position()) + cgv::math::abs(min))/size << " " << - 1 << std::endl;
+
+		int n = global_positions.size();
+		for (size_t i = 0; i < n; i++)
+		{
+			Vec3 current_pos = global_positions.front() + cgv::math::abs(min);
+			o << ids.front() << " " << current_pos/size << " " << parent_ids.front() << std::endl;
+			ids.pop_front();
+			global_positions.pop_front();
+			parent_ids.pop_front();
+		}
 	}
 	o.close();
 }
@@ -287,6 +370,70 @@ void Skeleton::read_pinocchio_file(std::string filename)
 	if (o)
 	{
 		/*Task 4.3: Read Pinocchio file */
+		reset_bounding_box();
+
+		Bone* root = Skeleton::get_root();
+		std::list<Bone*> to_visit;
+		std::list<Bone*> bones;
+		std::list<Bone*> parents;
+		to_visit.push_back(root);
+
+		while (to_visit.size() != 0) {
+			auto current_bone = to_visit.front();
+			to_visit.pop_front();
+			bones.push_back(current_bone);
+			parents.push_back(current_bone->get_parent());
+
+			for (size_t i = 0; i < current_bone->childCount(); i++) {
+				auto child = current_bone->child_at(i);
+				to_visit.push_front(child);
+			}
+		}
+		parents.pop_front();
+
+		Bone* current_bone = root;
+		std::string line;
+		std::map<int,  Vec3> skeleton;
+		while (getline(o, line))
+		{
+			current_bone = bones.front();
+			bones.pop_front();
+			std::list<float> read_floats;
+			std::string word;
+			std::stringstream ss(line);
+			while (getline(ss, word,  ' '))
+			{
+				read_floats.push_back(std::stof(word));
+			}
+			int parent_id = (int)read_floats.back();
+			read_floats.pop_back();
+			int id = (int)read_floats.front();
+			read_floats.pop_front();
+			Vec3 posit;
+			posit.x() = read_floats.front();
+			read_floats.pop_front();
+			posit.y() = read_floats.front();
+			read_floats.pop_front();
+			posit.z() = read_floats.front();
+			read_floats.pop_front();
+
+			skeleton[id] = posit;
+
+			Vec3 global_pos;
+
+			if (id == 0) {
+				current_bone->set_direction_in_world_space(posit.normalize());
+				current_bone->set_length(0);
+			}
+			else {
+				global_pos = (posit - skeleton.at(parent_id));
+				global_pos.normalize();
+				current_bone->set_direction_in_world_space(global_pos);
+				current_bone->set_length((posit - skeleton.at(parent_id)).length());
+			}
+			add_point(global_pos);
+			std::cout << "id: " << id << " parent_id: " << parent_id << " pos: " << posit << "\n";
+		}
 	}
 
 	o.close();
