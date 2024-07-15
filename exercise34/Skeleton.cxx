@@ -8,7 +8,7 @@
 #include <map>
 #include <string>
 #include <sstream>
-
+#include <iostream> 
 #include "math_helper.h"
 
 Skeleton::Skeleton()
@@ -273,6 +273,8 @@ void Skeleton::write_pinocchio_file(const std::string& filename)
 		std::list<Vec3> global_positions;
 		std::list<int> ids;
 		std::list<int> parent_ids;
+		std::list<std::string> parent_names;
+		std::list<std::string> names;
 		int id = 0;
 
 		for (size_t i = 0; i < root->childCount(); i++)
@@ -290,6 +292,8 @@ void Skeleton::write_pinocchio_file(const std::string& filename)
 			to_visit.pop_front();
 			parent_ids.push_back(parent_ids.front());
 			parent_ids.pop_front();
+			parent_names.push_back(current_bone->get_parent()->get_name());
+			names.push_back(current_bone->get_name());
 			id++;
 
 			
@@ -340,16 +344,16 @@ void Skeleton::write_pinocchio_file(const std::string& filename)
 		std::cout << global_positions.size();
 
 		// write into pino file
-		o << 0 << " " << (Vec3(root->get_bone_local_tip_position()) + cgv::math::abs(min))/size << " " << - 1 << std::endl;
+		o << "root" << " " << (Vec3(root->get_bone_local_tip_position()) + cgv::math::abs(min)) / size << " " << -1 << std::endl;
 
 		int n = global_positions.size();
 		for (size_t i = 0; i < n; i++)
 		{
 			Vec3 current_pos = global_positions.front() + cgv::math::abs(min);
-			o << ids.front() << " " << current_pos/size << " " << parent_ids.front() << " " << std::endl;
-			ids.pop_front();
+			o << names.front() << " " << current_pos/size << " " << parent_names.front() << " " << std::endl;
+			names.pop_front();
 			global_positions.pop_front();
-			parent_ids.pop_front();
+			parent_names.pop_front();
 		}
 
 
@@ -372,13 +376,39 @@ void Skeleton::read_pinocchio_file(std::string filename)
 	if (o)
 	{
 		/*Task 4.3: Read Pinocchio file */
+
+		
+		Bone* root = Skeleton::get_root();
+		std::list<Bone*> to_visit;
+		std::list<Bone*> bones;
+		to_visit.push_back(root);
+
+		while (to_visit.size() != 0)
+		{
+			auto current_bone = to_visit.front();
+			to_visit.pop_front();
+			bones.push_back(current_bone);
+
+			// add children to list
+			for (size_t i = 0; i < current_bone->childCount(); i++)
+			{
+				auto child = current_bone->child_at(i);
+				to_visit.push_front(child);
+			}
+		}
+
+		Bone* current_bone = bones.front();
+		bones.pop_front();
+		std::string line;
+		while (getline(o, line)) {
+			Vec3 global_pos;
+			std::cout << line << std::endl;
+		}
+		o.close();
+
+		postprocess(root, get_origin_vec());
 	}
-
-	o.close();
-
-	postprocess(root, get_origin_vec());
 }
-
 
 
 void Skeleton::get_skinning_matrices(std::vector<Mat4>& matrices)
