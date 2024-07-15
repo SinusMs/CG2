@@ -340,8 +340,8 @@ void Skeleton::write_pinocchio_file(const std::string& filename)
 		size = size < (max.z() - min.z()) ? (max.z() - min.z()) : size;
 
 
-		std::cout << parent_ids.size();
-		std::cout << global_positions.size();
+		
+
 
 		// write into pino file
 		o << "root" << " " << (Vec3(root->get_bone_local_tip_position()) + cgv::math::abs(min)) / size << " " << -1 << std::endl;
@@ -350,10 +350,10 @@ void Skeleton::write_pinocchio_file(const std::string& filename)
 		for (size_t i = 0; i < n; i++)
 		{
 			Vec3 current_pos = global_positions.front() + cgv::math::abs(min);
-			o << names.front() << " " << current_pos/size << " " << parent_names.front() << " " << std::endl;
-			names.pop_front();
+			o << ids.front() << " " << current_pos/size << " " << parent_ids.front() << " " << std::endl;
+			ids.pop_front();
 			global_positions.pop_front();
-			parent_names.pop_front();
+			parent_ids.pop_front();
 		}
 
 
@@ -375,13 +375,15 @@ void Skeleton::read_pinocchio_file(std::string filename)
 #endif
 	if (o)
 	{
+
+		reset_bounding_box();
+
 		/*Task 4.3: Read Pinocchio file */
 
 		// create list with bones in the same depth first order
 		Bone* root = Skeleton::get_root();
 		std::list<Bone*> to_visit;
 		std::list<Bone*> bones;
-		std::list<Bone*> parents;
 		to_visit.push_back(root);
 
 		while (to_visit.size() != 0)
@@ -389,7 +391,6 @@ void Skeleton::read_pinocchio_file(std::string filename)
 			auto current_bone = to_visit.front();
 			to_visit.pop_front();
 			bones.push_back(current_bone);
-			parents.push_back(current_bone->get_parent());
 
 			// add children to list
 			for (size_t i = 0; i < current_bone->childCount(); i++)
@@ -398,10 +399,9 @@ void Skeleton::read_pinocchio_file(std::string filename)
 				to_visit.push_front(child);
 			}
 		}
-		parents.pop_front(); //delete "parent" of root
 
 
-		// create map skeleton<id, global_pos>
+		// create map skeleton<id, pos>
 		std::map<int, Vec3> skeleton;
 		Bone* current_bone = root;
 		std::string line;
@@ -412,37 +412,49 @@ void Skeleton::read_pinocchio_file(std::string filename)
 			// get global position from line
 			std::list<std::string> l;
 			std::string s; 
-			std::stringstream ss(line);
-			while (getline(ss, s, ' ')) {
+			std::stringstream strs(line);
+			while (getline(strs, s, ' ')) {
 				l.push_back(s);
 			}
 			
-			Vec3 global_pos;
+			Vec3 position;
 			int id;
 			int parent_id;
 			id = stoi(l.front());
 			l.pop_front();
 			parent_id = stoi(l.back());
 			l.pop_back();
-			global_pos.x() = stof(l.front());
+			position.x() = stof(l.front());
 			l.pop_front();
-			global_pos.y() = stof(l.front());
+			position.y() = stof(l.front());
 			l.pop_front();
-			global_pos.z() = stof(l.front());
+			position.z() = stof(l.front());
 			
-			skeleton[id] = global_pos;
-
+			// write bones into map to later get parent position
+			skeleton[id] = position;
+			
+			// set direction and set length, different for root bc no parent
 			if (id == 0) {
-				current_bone->set_direction_in_world_space((global_pos.normalize()));
+				Vec3 pos = position.normalize();
+				current_bone->set_direction_in_world_space(pos);
 				current_bone->set_length(0);
+
+				current_bone->add_axis_rotation(&AtomicRotationTransform(pos));
 			}
 			else {
-				current_bone->set_direction_in_world_space(((global_pos - skeleton.at(parent_id)).normalize()));
-				current_bone->set_length((global_pos - skeleton.at(parent_id)).length());
+				Vec3 global_pos = (position - skeleton.at(parent_id));
+				add_point(global_pos);
+				global_pos.normalize();
+				current_bone->set_direction_in_world_space(global_pos);
+				current_bone->set_length((position - skeleton.at(parent_id)).length());
+
+				current_bone->add_axis_rotation(&AtomicRotationTransform(position - skeleton.at(parent_id)));
+
 			}
 			
 		}
 		o.close();
+
 
 		postprocess(root, get_origin_vec());
 	}
@@ -452,6 +464,7 @@ void Skeleton::read_pinocchio_file(std::string filename)
 void Skeleton::get_skinning_matrices(std::vector<Mat4>& matrices)
 {
 	/*Task 4.5: Calculate skinning matrices */
+
 }
 
 

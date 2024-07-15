@@ -53,6 +53,7 @@ void Bone::calculate_matrices()
 	////
 	// Task 4.6: Implement matrix calculation (skinning)
 
+
 }
 
 Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
