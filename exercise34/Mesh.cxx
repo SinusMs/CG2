@@ -149,6 +149,39 @@ void Mesh::read_attachment(std::string filename)
 	while (std::getline(f, line))
 	{
 		/*Task 4.5: Load pinocchio attachment */
+		std::stringstream line_ss(line);
+		float weight;
+		std::list<std::pair<float, int>> elements;
+		int idx = 0;
+		while (line_ss >> weight) {
+			//std::cout << weight << std::endl;
+			elements.push_back(std::pair<float, int>(weight, idx));
+			
+			idx++;
+		}
+		elements.sort();
+
+		ivec4 indices;
+		Vec4 weights;
+		for (int i = 0; i < 4; i++) {
+			weights[i] = elements.back().first;
+			indices[i] = elements.back().second;
+			elements.pop_back();
+		}
+
+		weights.normalize();
+		bone_weights.push_back(weights);
+		bone_indices.push_back(indices);
+		/*
+		int size = elements.size();
+		for (int i = 0; i < size; i++) {
+			auto [b, a] = elements.front();
+			std::cout << "idx:" << a << " " << "weight:" << b << " ";
+			elements.pop_front();
+		}
+		std::cout << std::endl;
+		break;*/
+
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, boneIndexBuffer);
@@ -156,7 +189,7 @@ void Mesh::read_attachment(std::string filename)
 
 	glBindBuffer(GL_ARRAY_BUFFER, boneWeightBuffer);
 	glBufferData(GL_ARRAY_BUFFER, bone_weights.size() * sizeof(Vec4), &bone_weights[0], GL_STATIC_DRAW);
-
+	std::cout << "works maybe?" << std::endl;
 	f.close();
 
 	has_attachment = true;

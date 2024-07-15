@@ -426,11 +426,11 @@ void Skeleton::read_pinocchio_file(std::string filename)
 			}
 			else {
 				global_pos = (posit - skeleton.at(parent_id));
+				add_point(global_pos);
 				global_pos.normalize();
 				current_bone->set_direction_in_world_space(global_pos);
 				current_bone->set_length((posit - skeleton.at(parent_id)).length());
 			}
-			add_point(global_pos);
 			std::cout << "id: " << id << " parent_id: " << parent_id << " pos: " << posit << "\n";
 		}
 	}
