@@ -28,6 +28,7 @@ Bone::~Bone()
 
 void Bone::calculate_matrices()
 {
+<<<<<<< HEAD
 
 	orientationSystemTransformLocalToGlobal.identity();
 	std::for_each(orientation.begin(), orientation.end(), [&](AtomicTransform* t) {
@@ -48,6 +49,29 @@ void Bone::calculate_matrices()
 	{
 		orientationModelTransformPrevJointToCur = orientationSystemTransformLocalToGlobal;
 		translationSystemTransformLocalToGlobal.identity();
+=======
+	orientationSystemTransformLocalToGlobal.identity();
+	std::for_each(orientation.begin(), orientation.end(), [&](AtomicTransform* t) {
+        orientationSystemTransformLocalToGlobal = orientationSystemTransformLocalToGlobal * t->calculate_matrix();
+	});
+    orientationModelTransformLocalToGlobal = cgv::math::inv(orientationSystemTransformLocalToGlobal);
+    // ^ same thing:  orientationSystemTransformGlobalToLocal = cgv::math::inv(orientationModelTransformGlobalToLocal);
+
+	////
+	// Task 3.1: Implement matrix calculation
+	Vec4 globalDirection = Vec4(direction_in_world_space.x() * length, direction_in_world_space.y() * length, direction_in_world_space.z() * length, 0);
+	Vec4 localDirection = orientationSystemTransformGlobalToLocal * globalDirection;
+    translationModelTransformCurJointToNext = translate(localDirection.x(), localDirection.y(), localDirection.z());
+	if (parent != nullptr)
+	{
+        orientationModelTransformPrevJointToCur = parent->orientationModelTransformLocalToGlobal * orientationModelTransformGlobalToLocal;
+        translationSystemTransformLocalToGlobal = parent->translationSystemTransformLocalToGlobal * translate(parent->direction_in_world_space * parent->length);
+	}
+	else
+	{
+        orientationModelTransformPrevJointToCur = orientationSystemTransformLocalToGlobal;
+        translationSystemTransformLocalToGlobal.identity();
+>>>>>>> branch123
 	}
 
 	////
@@ -57,6 +81,7 @@ void Bone::calculate_matrices()
 
 Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
 {
+<<<<<<< HEAD
 	// Calculates (T_prev2cur * O_prev2cur) * DoF_cur
 		//
 		//	T.....translation matrix (e.g. T_prev translation from previous bone to current)
@@ -65,15 +90,29 @@ Mat4 Bone::calculate_transform_prev_to_current_with_dofs()
 	Mat4 t = calculate_transform_prev_to_current_without_dofs();
 	for (unsigned int i = 0; i < dofs.size(); ++i)
 		t = t * dofs[i]->calculate_matrix();
+=======
+	////
+	// Task 3.1: Implement matrix calculation
+
+	Mat4 t = calculate_transform_prev_to_current_without_dofs();
+	for (unsigned int i = 0; i < dofs.size(); ++i)
+		t *= dofs[i]->calculate_matrix();
+>>>>>>> branch123
 	return t;
 }
 
 Mat4 Bone::calculate_transform_prev_to_current_without_dofs()
 {
+<<<<<<< HEAD
 	// Calculates T_prev2cur * O_prev2cur
 		//
 		//	T.....translation matrix (e.g. T_prev translation from previous bone to current)
 		//	O....."orientation" matrix, i.e. an arbitrary rotation of the local coordinate system relative to the parent. It is chosen such that we can define our degrees of freedom as axis-aligned Euler angles
+=======
+	////
+	// Task 3.1: Implement matrix calculation
+
+>>>>>>> branch123
 	Mat4 t = orientationModelTransformPrevJointToCur;
 	if (parent != nullptr)
 		t = parent->translationModelTransformCurJointToNext * t;
