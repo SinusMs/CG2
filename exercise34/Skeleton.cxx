@@ -381,6 +381,7 @@ void Skeleton::read_pinocchio_file(std::string filename)
 		Bone* root = Skeleton::get_root();
 		std::list<Bone*> to_visit;
 		std::list<Bone*> bones;
+		std::list<Bone*> parents;
 		to_visit.push_back(root);
 
 		while (to_visit.size() != 0)
@@ -388,6 +389,7 @@ void Skeleton::read_pinocchio_file(std::string filename)
 			auto current_bone = to_visit.front();
 			to_visit.pop_front();
 			bones.push_back(current_bone);
+			parents.push_back(current_bone->get_parent());
 
 			// add children to list
 			for (size_t i = 0; i < current_bone->childCount(); i++)
@@ -396,12 +398,17 @@ void Skeleton::read_pinocchio_file(std::string filename)
 				to_visit.push_front(child);
 			}
 		}
+		parents.pop_front(); //delete "parent" of root
 
-		
+
+		// create map skeleton<id, global_pos>
+		std::map<int, Vec3> skeleton;
+		Bone* current_bone = root;
 		std::string line;
 		while (getline(o, line)) {
-			Bone* current_bone = bones.front();
+			current_bone = bones.front();
 			bones.pop_front();
+
 			// get global position from line
 			std::list<std::string> l;
 			std::string s; 
@@ -409,20 +416,31 @@ void Skeleton::read_pinocchio_file(std::string filename)
 			while (getline(ss, s, ' ')) {
 				l.push_back(s);
 			}
-
+			
 			Vec3 global_pos;
+			int id;
+			int parent_id;
+			id = stoi(l.front());
 			l.pop_front();
+			parent_id = stoi(l.back());
 			l.pop_back();
 			global_pos.x() = stof(l.front());
 			l.pop_front();
 			global_pos.y() = stof(l.front());
 			l.pop_front();
 			global_pos.z() = stof(l.front());
-
-			std::cout << line << std::endl;
 			
-			current_bone->set_direction_in_world_space(global_pos.normalize());
-			current_bone->set_length(global_pos.length());
+			skeleton[id] = global_pos;
+
+			if (id == 0) {
+				current_bone->set_direction_in_world_space((global_pos.normalize()));
+				current_bone->set_length(0);
+			}
+			else {
+				current_bone->set_direction_in_world_space(((global_pos - skeleton.at(parent_id)).normalize()));
+				current_bone->set_length((global_pos - skeleton.at(parent_id)).length());
+			}
+			
 		}
 		o.close();
 
