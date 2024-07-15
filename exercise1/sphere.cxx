@@ -21,6 +21,8 @@ struct sphere : public implicit_primitive<T>
 		//            unit sphere.
 		f_p = p.sqr_length() - 1;
 
+		f_p = p.x() * p.x() + p.y() * p.y() + p.z() * p.z() - 1;
+
 		return f_p;
 	}
 
@@ -31,6 +33,10 @@ struct sphere : public implicit_primitive<T>
 
 		// Task 1.1a: Return the gradient of the function at p.
 		grad_f_p = p * 2;
+
+		grad_f_p.x() = 2 * p.x();
+		grad_f_p.y() = 2 * p.y();
+		grad_f_p.z() = 2 * p.z();
 
 		return grad_f_p;
 	}

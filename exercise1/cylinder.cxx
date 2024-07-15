@@ -23,6 +23,8 @@ struct cylinder :  public implicit_primitive<T>
 
 		f_p = p(0)*p(0) + p(1) * p(1) - 1;
 
+		f_p = p.x() * p.x() + p.y() * p.y() - 1;
+
 		return f_p;
 	}
 
@@ -37,6 +39,9 @@ struct cylinder :  public implicit_primitive<T>
 =======
 		grad_f_p = vec_type(2 * p.x(), 2 * p.y(), 0);
 >>>>>>> a6055c7abf770844bc1237dc869895366b2b4460
+
+		grad_f_p.x() = 2 * p.x();
+		grad_f_p.y() = 2 * p.y();
 
 		return grad_f_p;
 	}

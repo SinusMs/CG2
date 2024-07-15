@@ -17,7 +17,7 @@ struct box : public implicit_primitive<T>
 
 	// < your code >
 
-	/* [END] Task 1.1a
+	/* [END] Task 1.1a 																 */
 	/*********************************************************************************/
 
 	/// Evaluate the implicit box function at p
@@ -31,6 +31,8 @@ struct box : public implicit_primitive<T>
 
 		f_p =  std::max(std::max(std::abs(p(0)), std::abs(p(1))),std::abs(p(2))) -1;
 
+		f_p = std::max({std::abs(p.x()), std::abs(p.y()), std::abs(p.z())}) - 1;
+
 		return f_p;
 	}
 
@@ -43,6 +45,7 @@ struct box : public implicit_primitive<T>
 <<<<<<< HEAD
 		grad_f_p = vec_type();
 
+<<<<<<< HEAD
 =======
 		//TODO: proper gradient implementation
 		if (p.x() == 1) return vec_type(1, 0, 0);
@@ -52,6 +55,12 @@ struct box : public implicit_primitive<T>
 		else if (p.z() == 1) return vec_type(0, 0, 1);
 		else if (p.z() == -1) return vec_type(0, 0, -1);
 >>>>>>> a6055c7abf770844bc1237dc869895366b2b4460
+=======
+		if (std::abs(p.x()) == 1) grad_f_p.x() = p.x();
+		else if (std::abs(p.y()) == 1) grad_f_p.y() = p.y();
+		else if (std::abs(p.z()) == 1) grad_f_p.z() = p.z();
+
+>>>>>>> branch123
 		return grad_f_p;
 	}
 
